@@ -9,10 +9,13 @@ if (typeof document !== 'undefined') {
 export const useStore = create((set) => ({
   language: 'EN',
   carbonScore: 0,
+  pointsEarned: 0,
   theme: 'dark',
   toggleLanguage: () => set((state) => ({ language: state.language === 'EN' ? 'HI' : 'EN' })),
   setCarbonScore: (score) => set({ carbonScore: score }),
   addCarbonScore: (amount) => set((state) => ({ carbonScore: state.carbonScore + amount })),
+  setPointsEarned: (points) => set({ pointsEarned: points }),
+  addPointsEarned: (points) => set((state) => ({ pointsEarned: Math.max(0, state.pointsEarned + points) })),
   toggleTheme: () => set((state) => {
     const nextTheme = state.theme === 'dark' ? 'light' : 'dark'
     if (typeof document !== 'undefined') {

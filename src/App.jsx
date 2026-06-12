@@ -1,51 +1,44 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useStore } from './store/useStore'
+import { translations } from './locales/translations'
 import InsightsWizard from './components/wizard/InsightsWizard'
 import LandingPage from './components/LandingPage'
+import DailyTracker from './components/gamification/DailyTracker'
 import logoSvg from './assets/logo.svg?raw'
 import './App.css'
 
-const translations = {
-  EN: {
-    title: "CarbonPulse",
-    welcome: "Carbon Footprint Awareness Platform",
-    subtitle: "A dynamic, frontend-driven assistant designed to help you track, understand, and reduce your daily carbon emissions through actionable, gamified insights.",
-    scoreLabel: "Score",
-    toggleLang: "HI",
-    langName: "EN",
-    tag: "Challenge Vertical 3",
-    actionIncrement: "Simulate Carbon Activity (+10)",
-    actionDecrement: "Simulate Eco action (-10)",
-    actionReset: "Reset Score",
-    comingSoon: "Onboarding Wizard & Gamified Challenges coming soon in subsequent steps!",
-    cardTitle: "Track. Reduce. Neutralize.",
-    backHome: "Back to Home",
-  },
-  HI: {
-    title: "कार्बनपल्स (CarbonPulse)",
-    welcome: "कार्बन फुटप्रिंट जागरूकता मंच",
-    subtitle: "एक गतिशील, फ्रंटेंड-आधारित सहायक जो आपको व्यावहारिक, गेमयुक्त अंतर्दृष्टि के माध्यम से अपने दैनिक कार्बन उत्सर्जन को ट्रैक करने, समझने और कम करने में मदद करने के लिए डिज़ाइन किया गया है।",
-    scoreLabel: "स्कोर",
-    toggleLang: "EN",
-    langName: "HI",
-    tag: "चुनौती वर्टिकल ३",
-    actionIncrement: "कार्बन गतिविधि का अनुकरण करें (+10)",
-    actionDecrement: "पर्यावरण अनुकूल गतिविधि (-10)",
-    actionReset: "स्कोर रीसेट करें",
-    comingSoon: "ऑनबोर्डिंग विज़ार्ड और गेमीफाइड चुनौतियाँ आगामी चरणों में जल्द ही आ रही हैं!",
-    cardTitle: "ट्रैक करें। कम करें। निष्प्रभावी करें।",
-    backHome: "होम पर वापस जाएं",
-  }
-}
-
 function App() {
-  const { language, carbonScore, toggleLanguage, addCarbonScore, setCarbonScore, theme, toggleTheme } = useStore()
+  const { 
+    language, 
+    carbonScore, 
+    pointsEarned, 
+    toggleLanguage, 
+    addCarbonScore, 
+    setCarbonScore, 
+    theme, 
+    toggleTheme 
+  } = useStore()
+  
   const [view, setView] = useState('landing')
+  const [isPulsing, setIsPulsing] = useState(false)
   
   const t = translations[language]
 
+  // Dopamine pulse animation whenever scores change
+  useEffect(() => {
+    setIsPulsing(true)
+    const timer = setTimeout(() => setIsPulsing(false), 450)
+    return () => clearTimeout(timer)
+  }, [carbonScore, pointsEarned])
+
   return (
     <>
+      <div className="ambient-bg">
+        <div className="ambient-orb orb-1"></div>
+        <div className="ambient-orb orb-2"></div>
+        <div className="ambient-orb orb-3"></div>
+      </div>
+
       <nav className="navbar" role="navigation" aria-label="Main Navigation">
         <button 
           onClick={() => setView('landing')} 
@@ -54,7 +47,7 @@ function App() {
         >
           <div className="nav-brand">
             <div className="nav-logo-icon-wrapper" dangerouslySetInnerHTML={{ __html: logoSvg }} aria-hidden="true" />
-            <span className="nav-title">{t.title}</span>
+            <span className="nav-title">{t.appTitle}</span>
           </div>
         </button>
 
@@ -63,7 +56,7 @@ function App() {
             id="lang-toggle-btn"
             className="lang-toggle" 
             onClick={toggleLanguage}
-            aria-label={`Switch language to ${t.toggleLang}`}
+            aria-label="Toggle language between English and Hindi"
           >
             🌐 {t.langName}
           </button>
@@ -77,19 +70,27 @@ function App() {
             {theme === 'dark' ? '☀️' : '🌙'}
           </button>
           
-          <div className="score-badge" aria-live="polite">
+          <div className={`score-badge ${isPulsing ? 'pulse-animation' : ''}`} aria-live="polite">
             <svg className="score-badge-icon" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 2L2 22h20L12 2zm0 5l7.5 13H4.5L12 7z"/>
             </svg>
-            <span>{t.scoreLabel}: {carbonScore} kg CO₂e</span>
+            <span>{t.scoreLabel}: {carbonScore.toFixed(1)} kg CO₂e</span>
+          </div>
+
+          <div className={`score-badge ${isPulsing ? 'pulse-animation' : ''}`} style={{ borderColor: 'rgba(var(--accent-secondary-rgb), 0.2)', color: 'var(--accent-secondary)', background: 'rgba(var(--accent-secondary-rgb), 0.08)' }} aria-live="polite">
+            <span aria-hidden="true">🏆</span>
+            <span>{t.pointsLabel}: {pointsEarned} pts</span>
           </div>
         </div>
       </nav>
 
       <main className="app-container">
         {view === 'landing' ? (
-          <LandingPage onStart={() => setView('wizard')} />
-        ) : (
+          <LandingPage 
+            onStart={() => setView('wizard')} 
+            onStartTracker={() => setView('tracker')} 
+          />
+        ) : view === 'wizard' ? (
           <div>
             <button 
               id="back-home-btn"
@@ -101,6 +102,19 @@ function App() {
               ← {t.backHome}
             </button>
             <InsightsWizard />
+          </div>
+        ) : (
+          <div>
+            <button 
+              id="back-home-btn"
+              className="btn-secondary" 
+              style={{ marginBottom: '1.5rem', display: 'inline-flex', alignItems: 'center', gap: '8px' }} 
+              onClick={() => setView('landing')}
+              aria-label={t.backHome}
+            >
+              ← {t.backHome}
+            </button>
+            <DailyTracker />
           </div>
         )}
         

@@ -16,3 +16,17 @@
 ## 📌 Assumptions Made
 - The application operates entirely client-side to ensure zero backend latency and maximum data privacy.
 - User data is transiently managed in the browser session/local storage, requiring no external database connections.
+
+## 🏗️ System Architecture
+```mermaid
+graph TD;
+    Client[User Browser] -->|HTTPS| CDN[Google Cloud Run];
+    CDN -->|Serves| UI[React / Vite Frontend];
+    
+    subgraph Client-Side Engine
+    UI --> State[Zustand / Local State];
+    UI --> I18n[EN/HI Dictionary];
+    State --> Storage[(Browser LocalStorage)];
+    Storage -.->|Persists Auth & Scores| State;
+    end
+```
