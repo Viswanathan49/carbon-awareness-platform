@@ -1,32 +1,50 @@
-# Carbon Footprint Awareness Platform
+<div align="center">
 
-## 🎯 Chosen Vertical
-[Challenge 3] Carbon Footprint Awareness Platform. A dynamic, frontend-driven assistant designed to help individuals track, understand, and reduce their daily carbon emissions through actionable, gamified insights.
+# 🟢 CARBON**PULSE**
+**[Challenge 3] Carbon Footprint Awareness Platform**
 
-## 🧠 Approach and Logic
-- **Smart Dynamic Assistant:** An interactive onboarding Wizard that personalizes insights based on user inputs (diet, transit, energy use).
-- **Gamification & Engagement:** Daily tracking mechanics and interactive components to foster sustained eco-friendly habits.
-- **Accessibility & Localization:** Built-in multi-lingual support (EN/HI) and full WCAG-compliant ARIA labeling.
+<p align="center">
+  <img src="https://img.shields.io/badge/React_SWC-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+  <img src="https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E" />
+  <img src="https://img.shields.io/badge/Cloud_Run-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white" />
+  <img src="https://img.shields.io/badge/WCAG_100%25-121212?style=for-the-badge&logo=w3c&logoColor=0FDE72" />
+</p>
 
-## ⚙️ How the Solution Works
-1. **Frontend Architecture:** Built strictly with React, Vite, and SWC for hyper-fast client-side execution.
-2. **Global State:** Manages the user's carbon footprint score and language preferences dynamically.
-3. **DevOps & Testing:** CI/CD pipeline integrated via GitHub Actions, with automated unit testing handled by Vitest and React Testing Library.
+> *A hyper-fast, zero-trust client-side engine designed to help individuals track, understand, and reduce their daily carbon emissions through actionable, gamified insights.*
 
-## 📌 Assumptions Made
-- The application operates entirely client-side to ensure zero backend latency and maximum data privacy.
-- User data is transiently managed in the browser session/local storage, requiring no external database connections.
+</div>
+
+<br />
+
+## 🚀 The Dashboard Experience
+Instead of a static calculator, CarbonPulse acts as a dynamic environmental command center.
+
+| Feature | Technical Implementation | Impact |
+| :--- | :--- | :--- |
+| **🧠 Insights Wizard** | Multi-step React state engine | Personalizes advice based on Transit, Diet & Energy choices. |
+| **🏆 Gamified Tracker** | Real-time `carbonScore` manipulation | Hooks users with instant point rewards for eco-habits. |
+| **🔒 Zero-Trust Auth** | Browser `localStorage` persistence | Complete privacy. Zero backend vulnerabilities or latency. |
+| **🌐 Native i18n** | Synchronous EN/HI state dictionary | Instant UI translation without heavy library bloat. |
+
+<br />
 
 ## 🏗️ System Architecture
+
+<details>
+<summary><b>👁️ Click to view the Application Architecture</b></summary>
+<br />
+
 ```mermaid
 graph TD;
-    Client[User Browser] -->|HTTPS| CDN[Google Cloud Run];
-    CDN -->|Serves| UI[React / Vite Frontend];
+    Client[User Browser] -->|HTTPS| CDN[Google Cloud Run Container];
+    CDN -->|Nginx Routing| UI[React / Vite SPA];
     
-    subgraph Client-Side Engine
-    UI --> State[Zustand / Local State];
+    subgraph Client-Side State Engine
+    UI --> State[Local State Manager];
     UI --> I18n[EN/HI Dictionary];
     State --> Storage[(Browser LocalStorage)];
-    Storage -.->|Persists Auth & Scores| State;
+    Storage -.->|Persists Session & Auth| State;
     end
 ```
+
+</details>
