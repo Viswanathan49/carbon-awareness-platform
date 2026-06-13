@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useStore } from '../../store/useStore'
 import { translations } from '../../locales/translations'
+import CarbonAnalytics from '../CarbonAnalytics'
 
 // Emissions points configuration in kg CO2e / month
 const EMISSIONS = {
@@ -179,6 +180,8 @@ export default function InsightsWizard() {
               <span className="wizard-score-number">{totalEmissions}</span>
               <span className="wizard-score-unit">kg CO₂e / month</span>
             </div>
+            
+            <CarbonAnalytics />
             
             <div className={`wizard-comparison ${comparisonClass}`}>
               <span className="comparison-dot"></span>
