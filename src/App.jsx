@@ -167,7 +167,12 @@ function App() {
           </div>
         )}
 
-        {view === 'landing' && <CarbonAnalytics userTotal={carbonScore > 0 ? carbonScore / 1000 : 4.5} />}
+        {view === 'landing' && (
+          <>
+            <div className="h-[200px] w-full shrink-0 clear-both"></div>
+            <CarbonAnalytics userTotal={carbonScore > 0 ? carbonScore / 1000 : 4.5} />
+          </>
+        )}
       </main>
     </>
   )
