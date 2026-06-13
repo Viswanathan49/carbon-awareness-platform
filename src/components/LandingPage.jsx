@@ -6,7 +6,7 @@ export default function LandingPage({ onStart, onStartTracker }) {
   const t = translations[language]
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', backgroundColor: '#121212' }}>
+    <div className="min-h-screen flex flex-col relative overflow-hidden bg-gray-50 dark:bg-[#0a0a0a] text-gray-900 dark:text-white transition-colors duration-300">
       {/* Ambient background grid */}
       <div className="bg-tech-grid" style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }} />
 
