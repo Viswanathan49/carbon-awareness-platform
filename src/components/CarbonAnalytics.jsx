@@ -28,12 +28,11 @@ export default function CarbonAnalytics({ userTotal = 4.5 }) {
   const calculatePercentage = (user, baseline) => Math.min((user / baseline) * 100, 100).toFixed(0);
 
   return (
-    <div className="relative block w-full clear-both mt-24 mb-16 px-4 z-0">
+    <div className="relative block w-full clear-both mt-32 mb-16 px-4 z-0">
       <div className="flex flex-col gap-8 w-full max-w-4xl mx-auto p-8 bg-white dark:bg-[#121212] border border-gray-200 dark:border-white/10 rounded-2xl shadow-xl">
         
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Carbon Telemetry</h2>
         
-        {/* LOCALIZATION MATRIX */}
         <div className="p-6 bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/5 rounded-xl">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-gray-900 dark:text-white text-sm font-bold tracking-widest uppercase">Comparative Analysis</h3>
@@ -50,7 +49,6 @@ export default function CarbonAnalytics({ userTotal = 4.5 }) {
           </div>
 
           <div className="space-y-8">
-            {/* Vs Selected Region */}
             <div>
               <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
                 <span>Vs {region} Baseline ({baselines[region]}t)</span>
@@ -64,7 +62,6 @@ export default function CarbonAnalytics({ userTotal = 4.5 }) {
               </div>
             </div>
 
-            {/* Vs Paris Agreement */}
             <div>
               <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
                 <span>Vs Paris 1.5°C Target (2.0t)</span>
@@ -80,7 +77,6 @@ export default function CarbonAnalytics({ userTotal = 4.5 }) {
           </div>
         </div>
 
-        {/* RECHARTS ENGINE */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="h-72 w-full bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/5 rounded-xl p-5 flex flex-col">
             <h3 className="text-[#0FDE72] text-xs font-bold tracking-widest mb-4 uppercase">Emission Source Breakdown</h3>
