@@ -5,6 +5,7 @@ import InsightsWizard from './components/wizard/InsightsWizard'
 import LandingPage from './components/LandingPage'
 import DailyTracker from './components/gamification/DailyTracker'
 import SystemTour from './components/SystemTour'
+import CarbonAnalytics from './components/CarbonAnalytics'
 import logoSvg from './assets/logo.svg?raw'
 import './App.css'
 
@@ -165,6 +166,8 @@ function App() {
             </div>
           </div>
         )}
+
+        {view === 'landing' && <CarbonAnalytics userTotal={carbonScore > 0 ? carbonScore / 1000 : 4.5} />}
       </main>
     </>
   )

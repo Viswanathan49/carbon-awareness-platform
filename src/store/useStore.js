@@ -1,16 +1,16 @@
 import { create } from 'zustand'
 
-// Initialize the body and html with dark theme by default
+// Initialize the body and html with light theme by default
 if (typeof document !== 'undefined') {
-  document.body.classList.add('dark')
-  document.documentElement.classList.add('dark')
+  document.body.classList.add('light')
+  document.documentElement.classList.add('light')
 }
 
 export const useStore = create((set) => ({
   language: 'EN',
   carbonScore: 0,
   pointsEarned: 0,
-  theme: 'dark',
+  theme: 'light',
   toggleLanguage: () => set((state) => ({ language: state.language === 'EN' ? 'HI' : 'EN' })),
   setCarbonScore: (score) => set({ carbonScore: score }),
   addCarbonScore: (amount) => set((state) => ({ carbonScore: state.carbonScore + amount })),
