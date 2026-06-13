@@ -28,7 +28,6 @@ export default function CarbonAnalytics({ userTotal = 4.5 }) {
   const calculatePercentage = (user, baseline) => Math.min((user / baseline) * 100, 100).toFixed(0);
 
   return (
-    {/* ENFORCED BLOCK LAYOUT: Removed negative margins, added massive clearing space (mt-24), isolated z-index */}
     <div className="relative block w-full clear-both mt-24 mb-16 px-4 z-0">
       <div className="flex flex-col gap-8 w-full max-w-4xl mx-auto p-8 bg-white dark:bg-[#121212] border border-gray-200 dark:border-white/10 rounded-2xl shadow-xl">
         
