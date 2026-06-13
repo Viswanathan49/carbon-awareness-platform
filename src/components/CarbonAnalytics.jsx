@@ -29,7 +29,10 @@ export default function CarbonAnalytics() {
                   <Cell fill={entry.color} key={`cell-${index}`} stroke="transparent"/>
                 ))}
               </Pie>
-              <Tooltip contentStyle={{ backgroundColor: '#121212', border: '1px solid #0FDE72', borderRadius: '8px', color: '#fff' }} itemStyle={{ color: '#0FDE72' }}/>
+              <Tooltip 
+                contentStyle={{ backgroundColor: '#121212', border: '1px solid #0FDE72', borderRadius: '8px' }}
+                itemStyle={{ color: '#fff' }}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -40,8 +43,17 @@ export default function CarbonAnalytics() {
             <LineChart data={historyData}>
               <XAxis axisLine={false} dataKey="month" fontSize={12} stroke="#64748b" tickLine={false}/>
               <YAxis axisLine={false} fontSize={12} stroke="#64748b" tickLine={false}/>
-              <Tooltip contentStyle={{ backgroundColor: '#121212', border: '1px solid #00D1FF', borderRadius: '8px' }}/>
-              <Line type="monotone" dataKey="emissions" stroke="#00D1FF" strokeWidth={3} dot={{ fill: '#121212', stroke: '#00D1FF', strokeWidth: 2, r: 4 }} activeDot={{ r: 6, fill: '#00D1FF' }}/>
+              <Tooltip 
+                contentStyle={{ backgroundColor: '#121212', border: '1px solid #00D1FF', borderRadius: '8px' }}
+              />
+              <Line 
+                dataKey="emissions" 
+                stroke="#00D1FF" 
+                strokeWidth={3} 
+                type="monotone" 
+                dot={{ fill: '#121212', stroke: '#00D1FF', strokeWidth: 2, r: 4 }}
+                activeDot={{ r: 6 }}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>
