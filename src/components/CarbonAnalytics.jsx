@@ -1,5 +1,15 @@
 import React from 'react';
-import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts';
 
 const data = [
   { name: 'Transport', value: 45, color: '#0FDE72' },
@@ -11,7 +21,7 @@ const data = [
 const historyData = [
   { month: 'Jan', emissions: 5.2 },
   { month: 'Feb', emissions: 4.8 },
-  { month: 'Mar', emissions: 4.5 },
+  { month: 'Mar', emissions: 4.5 }
 ];
 
 export default function CarbonAnalytics() {
@@ -22,14 +32,21 @@ export default function CarbonAnalytics() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="h-64 w-full bg-black/40 border border-white/5 rounded-xl p-4">
           <h3 className="text-[#0FDE72] text-xs font-bold tracking-widest mb-2 uppercase">Emission Source Breakdown</h3>
-          <ResponsiveContainer height="100%" width="100%">
+          <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <Pie data={data} dataKey="value" innerRadius={60} outerRadius={80} paddingAngle={5}>
+              <Pie
+                data={data}
+                dataKey="value"
+                nameKey="name"
+                innerRadius={60}
+                outerRadius={80}
+                paddingAngle={5}
+              >
                 {data.map((entry, index) => (
-                  <Cell fill={entry.color} key={`cell-${index}`} stroke="transparent"/>
+                  <Cell key={`cell-${index}`} fill={entry.color} stroke="transparent" />
                 ))}
               </Pie>
-              <Tooltip 
+              <Tooltip
                 contentStyle={{ backgroundColor: '#121212', border: '1px solid #0FDE72', borderRadius: '8px' }}
                 itemStyle={{ color: '#fff' }}
               />
@@ -39,18 +56,18 @@ export default function CarbonAnalytics() {
 
         <div className="h-64 w-full bg-black/40 border border-white/5 rounded-xl p-4">
           <h3 className="text-[#00D1FF] text-xs font-bold tracking-widest mb-2 uppercase">Historical Trend Matrix</h3>
-          <ResponsiveContainer height="100%" width="100%">
+          <ResponsiveContainer width="100%" height="100%">
             <LineChart data={historyData}>
-              <XAxis axisLine={false} dataKey="month" fontSize={12} stroke="#64748b" tickLine={false}/>
-              <YAxis axisLine={false} fontSize={12} stroke="#64748b" tickLine={false}/>
-              <Tooltip 
+              <XAxis dataKey="month" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
+              <Tooltip
                 contentStyle={{ backgroundColor: '#121212', border: '1px solid #00D1FF', borderRadius: '8px' }}
               />
-              <Line 
-                dataKey="emissions" 
-                stroke="#00D1FF" 
-                strokeWidth={3} 
-                type="monotone" 
+              <Line
+                type="monotone"
+                dataKey="emissions"
+                stroke="#00D1FF"
+                strokeWidth={3}
                 dot={{ fill: '#121212', stroke: '#00D1FF', strokeWidth: 2, r: 4 }}
                 activeDot={{ r: 6 }}
               />
