@@ -1112,3 +1112,20 @@ body.dark .tracker-wrapper {
   0% { transform: translate(0, 0) scale(1); }
   100% { transform: translate(80px, 120px) scale(1.2); }
 }
+
+/* Custom Cyberpunk Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #121212; /* Deep dark background */
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(15, 222, 114, 0.2); /* Faint neon glow */
+  border-radius: 5px;
+  border: 1px solid rgba(15, 222, 114, 0.5);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 222, 114, 0.6); /* Bright neon glow on hover */
+  box-shadow: 0 0 10px rgba(15, 222, 114, 0.8);
+}

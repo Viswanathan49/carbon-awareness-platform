@@ -4,6 +4,7 @@ import { translations } from './locales/translations'
 import InsightsWizard from './components/wizard/InsightsWizard'
 import LandingPage from './components/LandingPage'
 import DailyTracker from './components/gamification/DailyTracker'
+import SystemTour from './components/SystemTour'
 import logoSvg from './assets/logo.svg?raw'
 import './App.css'
 
@@ -33,6 +34,7 @@ function App() {
 
   return (
     <>
+      <SystemTour />
       <div className="ambient-bg">
         <div className="ambient-orb orb-1"></div>
         <div className="ambient-orb orb-2"></div>
