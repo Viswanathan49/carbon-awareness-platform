@@ -26,13 +26,13 @@ export default function LandingPage({ onStart, onStartTracker }) {
       >
         {/* High-impact slogan */}
         <h1
+          className="text-gray-900 dark:text-white"
           style={{
             fontFamily: 'var(--font-display)',
             fontWeight: 900,
             fontSize: 'clamp(2.5rem, 8vw, 6rem)',
             letterSpacing: '-0.04em',
             lineHeight: 1.05,
-            color: '#ffffff',
             margin: '0 0 1.5rem',
             maxWidth: '900px',
           }}
@@ -44,10 +44,10 @@ export default function LandingPage({ onStart, onStartTracker }) {
         </h1>
 
         <p
+          className="text-gray-600 dark:text-gray-300"
           style={{
             marginTop: '0.5rem',
             fontSize: 'clamp(1rem, 2.5vw, 1.35rem)',
-            color: 'rgba(255,255,255,0.65)',
             maxWidth: '640px',
             fontWeight: 300,
             lineHeight: 1.6,
@@ -55,7 +55,7 @@ export default function LandingPage({ onStart, onStartTracker }) {
           }}
         >
           The ultimate client-side engine for carbon awareness.{' '}
-          <b style={{ color: 'rgba(255,255,255,0.9)', fontWeight: 700 }}>
+          <b className="text-gray-900 dark:text-white font-bold">
             Dynamic. Direct. 100% Database-Free.
           </b>
         </p>
