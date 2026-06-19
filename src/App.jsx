@@ -33,6 +33,14 @@ function App() {
     return () => clearTimeout(timer)
   }, [carbonScore, pointsEarned])
 
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
+
   return (
     <>
       <SystemTour />
@@ -122,16 +130,16 @@ function App() {
         )}
         
         {view === 'landing' && (
-          <div className="welcome-card" style={{ marginTop: '3rem' }}>
+          <div className="welcome-card bg-white dark:bg-[#121212] text-gray-900 dark:text-white" style={{ marginTop: '3rem' }}>
             <span className="badge">{t.tag}</span>
-            <h1 className="welcome-title">{t.welcome}</h1>
-            <p className="welcome-subtitle">{t.subtitle}</p>
+            <h1 className="welcome-title text-gray-900 dark:text-white">{t.welcome}</h1>
+            <p className="welcome-subtitle text-gray-600 dark:text-gray-300">{t.subtitle}</p>
             
-            <div style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px dashed rgba(255,255,255,0.08)' }}>
-              <h3 style={{ fontFamily: 'var(--font-display)', color: 'var(--accent-secondary)', marginTop: 0 }}>
+            <div className="my-8 p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 border-dashed">
+              <h3 className="font-display text-sky-500 dark:text-sky-400 mt-0">
                 {t.cardTitle}
               </h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">
                 {t.comingSoon}
               </p>
             </div>
