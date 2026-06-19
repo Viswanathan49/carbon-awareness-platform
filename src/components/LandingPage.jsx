@@ -111,18 +111,7 @@ export default function LandingPage({ onStart, onStartTracker }) {
       <section
         id="features"
         aria-label="Advanced Command Modules"
-        style={{
-          position: 'relative',
-          zIndex: 1,
-          minHeight: '100vh',
-          padding: '6rem 1.5rem',
-          background: 'rgba(26, 26, 26, 0.5)',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
+        className="relative z-10 min-h-screen flex flex-col items-center py-24 px-6 bg-white/40 dark:bg-black/40 backdrop-blur-md"
       >
         <h2
           className="text-neon-glow"
@@ -138,7 +127,7 @@ export default function LandingPage({ onStart, onStartTracker }) {
         >
           Advanced Command Modules
         </h2>
-        <p style={{ color: 'rgba(255,255,255,0.45)', marginBottom: '3.5rem', textAlign: 'center', fontSize: '1.05rem' }}>
+        <p className="text-gray-600 dark:text-gray-400 mb-14 text-center text-lg">
           Every feature engineered for zero-latency, zero-database performance.
         </p>
 
