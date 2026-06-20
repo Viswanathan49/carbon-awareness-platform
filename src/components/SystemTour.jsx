@@ -61,18 +61,17 @@ export default function SystemTour() {
         border: '1px solid rgba(15, 222, 114, 0.2)',
         boxShadow: '0 0 40px rgba(0,0,0,0.5)'
       }}>
-        {/* Progress Bar */}
         <div style={{
           display: 'flex',
           gap: '8px',
           marginBottom: '1rem'
         }}>
           {TOUR_STEPS.map((_, idx) => (
-            <div key={idx} style={{
+            <div key={idx} className={idx <= currentStep ? '' : 'bg-gray-200 dark:bg-white/10'} style={{
               height: '4px',
               flex: 1,
               borderRadius: '2px',
-              backgroundColor: idx <= currentStep ? '#0FDE72' : 'rgba(255,255,255,0.1)',
+              backgroundColor: idx <= currentStep ? '#0FDE72' : undefined,
               transition: 'background-color 0.3s ease',
               boxShadow: idx <= currentStep ? '0 0 10px rgba(15, 222, 114, 0.5)' : 'none'
             }} />
@@ -89,10 +88,9 @@ export default function SystemTour() {
           }}>
             {TOUR_STEPS[currentStep].title}
           </h2>
-          <p style={{
+          <p className="text-gray-700 dark:text-gray-300" style={{
             fontSize: '1.1rem',
             lineHeight: 1.6,
-            color: 'rgba(255,255,255,0.8)',
             margin: 0
           }}>
             {TOUR_STEPS[currentStep].text}
@@ -107,10 +105,10 @@ export default function SystemTour() {
         }}>
           <button 
             onClick={handleClose}
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors"
             style={{
               background: 'transparent',
               border: 'none',
-              color: 'rgba(255,255,255,0.4)',
               cursor: 'pointer',
               fontSize: '0.9rem',
               padding: '0.5rem',

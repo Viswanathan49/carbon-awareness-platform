@@ -379,7 +379,7 @@ export default function CarbonAnalytics() {
                   <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748b' }} width={80} />
                   <Tooltip 
                     cursor={{fill: 'rgba(255, 255, 255, 0.05)'}}
-                    contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px', color: '#fff', fontSize: '12px' }}
+                    contentStyle={{ backgroundColor: 'rgba(17, 17, 17, 0.75)', backdropFilter: 'blur(8px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff', fontSize: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}
                     formatter={(v) => [`${v.toLocaleString()} kg`, 'Footprint']}
                   />
                   <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={14}>
@@ -406,7 +406,7 @@ export default function CarbonAnalytics() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px', color: '#fff', fontSize: '12px' }}
+                    contentStyle={{ backgroundColor: 'rgba(17, 17, 17, 0.75)', backdropFilter: 'blur(8px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff', fontSize: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}
                     itemStyle={{ color: '#fff' }}
                     formatter={(v) => [`${v.toLocaleString()} kg`, '']}
                   />
@@ -525,7 +525,7 @@ export default function CarbonAnalytics() {
                       <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#8c96a5' }} axisLine={false} tickLine={false} />
                       <YAxis tick={{ fontSize: 10, fill: '#8c96a5' }} axisLine={false} tickLine={false} />
                       <Tooltip
-                        contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px', color: '#fff', fontSize: '12px' }}
+                        contentStyle={{ backgroundColor: 'rgba(17, 17, 17, 0.75)', backdropFilter: 'blur(8px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff', fontSize: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}
                         formatter={(v) => [`${v.toLocaleString()} kg`, 'Recorded Total']}
                       />
                       <ReferenceLine y={annualGoal} stroke="#38bdf8" strokeDasharray="3 3" label={{ position: 'insideTopLeft', value: 'Target', fill: '#38bdf8', fontSize: 12 }} />
@@ -573,8 +573,8 @@ export default function CarbonAnalytics() {
       {/* ════════════════════════════════════════════════
           DATA SOURCES & ABOUT FOOTER
       ════════════════════════════════════════════════ */}
-      <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 grid grid-cols-1 md:grid-cols-2 gap-8 text-xs text-gray-500 dark:text-gray-400">
-        <div>
+      <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 grid grid-cols-1 md:grid-cols-2 gap-8 text-xs">
+        <div className="glass-card p-6 bg-white dark:bg-[#16161a] rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm text-gray-500 dark:text-gray-400 hover:shadow-md transition-shadow">
           <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-4">Data Sources</h4>
           <ul className="flex flex-col gap-2">
             <li><span className="font-semibold text-gray-700 dark:text-gray-300">UK DEFRA 2023</span> — Transport & Home Energy factors</li>
@@ -584,7 +584,7 @@ export default function CarbonAnalytics() {
             <li><span className="font-semibold text-gray-700 dark:text-gray-300">IPCC AR6 / SR1.5</span> — Consumption & Paris target</li>
           </ul>
         </div>
-        <div>
+        <div className="glass-card p-6 bg-white dark:bg-[#16161a] rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm text-gray-500 dark:text-gray-400 hover:shadow-md transition-shadow">
           <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-4">About</h4>
           <p className="leading-relaxed mb-4">
             This tool provides estimates for educational purposes based on peer-reviewed emission factors. Individual results may vary based on local grid mix, vehicle efficiency, and personal circumstances.
