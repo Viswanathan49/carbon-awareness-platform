@@ -1154,3 +1154,24 @@ body.dark ::-webkit-scrollbar-thumb:hover {
   background: rgba(15, 222, 114, 0.6);
   box-shadow: 0 0 10px rgba(15, 222, 114, 0.8);
 }
+
+@media print {
+  .no-print, .navbar, .ambient-bg {
+    display: none !important;
+  }
+  body, .app-container {
+    background: white !important;
+    color: black !important;
+    overflow: visible !important;
+  }
+  .lg\:col-span-5 {
+    grid-column: span 12 / span 12 !important;
+    width: 100% !important;
+  }
+  .recharts-wrapper {
+    max-width: 100% !important;
+  }
+  .dark {
+    color-scheme: light !important;
+  }
+}

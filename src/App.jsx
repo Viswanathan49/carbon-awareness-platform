@@ -7,7 +7,7 @@ import DailyTracker from './components/gamification/DailyTracker'
 import SystemTour from './components/SystemTour'
 import CarbonAnalytics from './components/CarbonAnalytics'
 import CommandModules from './components/CommandModules'
-import logoSvg from './assets/logo.svg?raw'
+import logoUrl from './assets/logo.svg'
 import './App.css'
 
 function App() {
@@ -46,7 +46,7 @@ function App() {
           aria-label="Navigate to Home Page"
         >
           <div className="nav-brand">
-            <div className="nav-logo-icon-wrapper" dangerouslySetInnerHTML={{ __html: logoSvg }} aria-hidden="true" />
+            <img src={logoUrl} alt="CarbonPulse Logo" className="w-8 h-8 mr-2" aria-hidden="true" />
             <span className="nav-title">{t.appTitle}</span>
           </div>
         </button>

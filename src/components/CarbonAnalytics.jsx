@@ -135,7 +135,7 @@ export default function CarbonAnalytics() {
             LEFT COLUMN — FORM
         ════════════════════════════════════════════════ */}
         <form 
-          className="lg:col-span-7 flex flex-col gap-6"
+          className="lg:col-span-7 flex flex-col gap-6 no-print"
           onSubmit={(e) => {
             e.preventDefault();
             setHasCalculated(true);
@@ -277,12 +277,15 @@ export default function CarbonAnalytics() {
                   <span className="font-bold text-gray-700 dark:text-gray-200">{(total / GLOBAL_AVG).toFixed(1)}×</span>
                   {' '}the global average.
                 </p>
-                <div className="mt-6 flex flex-col sm:flex-row gap-3 relative z-10">
+                <div className="mt-6 flex flex-col sm:flex-row gap-3 relative z-10 no-print">
                   <button onClick={saveEntry} className={`flex-1 py-2.5 rounded-xl font-bold text-xs tracking-wide transition-all duration-300 border ${saved ? 'bg-[#0FDE72]/10 text-[#0FDE72] border-[#0FDE72]/30' : 'bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white border-gray-200 dark:border-gray-700 hover:border-[#0FDE72] hover:text-[#0FDE72]'}`}>
                     {saved ? '✅ Saved' : '💾 Save Entry'}
                   </button>
                   <button onClick={copyToClipboard} className={`flex-1 py-2.5 rounded-xl font-bold text-xs tracking-wide transition-all duration-300 border ${copied ? 'bg-[#00D1FF]/10 text-[#00D1FF] border-[#00D1FF]/30' : 'bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white border-gray-200 dark:border-gray-700 hover:border-[#00D1FF] hover:text-[#00D1FF]'}`}>
                     {copied ? '✅ Copied' : '📤 Share'}
+                  </button>
+                  <button onClick={() => window.print()} className="flex-1 py-2.5 rounded-xl font-bold text-xs tracking-wide transition-all duration-300 border bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white border-gray-200 dark:border-gray-700 hover:border-[#B026FF] hover:text-[#B026FF]">
+                    🖨️ Export PDF
                   </button>
                 </div>
               </div>
