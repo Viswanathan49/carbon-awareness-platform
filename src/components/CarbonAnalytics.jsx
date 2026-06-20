@@ -139,12 +139,15 @@ export default function CarbonAnalytics() {
           onSubmit={(e) => {
             e.preventDefault();
             setHasCalculated(true);
-            const el = document.getElementById('assessment');
-            if (el) {
-              el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            } else {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+            // Wait for React to render the results dashboard before scrolling
+            setTimeout(() => {
+              const el = document.getElementById('results-dashboard');
+              if (el) {
+                const yOffset = -100; // Offset for sticky navbar
+                const y = el.getBoundingClientRect().top + window.scrollY + yOffset;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+              }
+            }, 100);
           }}
         >
 
@@ -237,7 +240,7 @@ export default function CarbonAnalytics() {
         {/* ════════════════════════════════════════════════
             RIGHT COLUMN — RESULTS DASHBOARD
         ════════════════════════════════════════════════ */}
-        <div className="lg:col-span-5 flex flex-col gap-6 lg:sticky lg:top-8">
+        <div id="results-dashboard" className="lg:col-span-5 flex flex-col gap-6 lg:sticky lg:top-8">
           
           {!hasCalculated ? (
             <div className="bg-white dark:bg-[#16161a] rounded-3xl border border-gray-200 dark:border-gray-800 p-8 flex flex-col items-center justify-center text-center h-full min-h-[400px] shadow-sm">
