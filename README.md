@@ -127,7 +127,8 @@ To ensure absolute legitimacy in footprint calculations, our calculations utiliz
 
 CarbonPulse runs on a **Zero-Trust Architecture**:
 - **No Backend Databases**: We intentionally avoided storing user data on a central database. 
-- **Content Security Policy**: `index.html` implements a strict CSP meta tag (`default-src 'self'`) to explicitly block XSS attacks and unauthorized remote script execution.
+- **Content Security Policy**: `index.html` implements a strict CSP meta tag (`default-src 'self'`) and strict headers (`X-Content-Type-Options`, `X-XSS-Protection`) to explicitly block unauthorized remote script execution.
+- **XSS Mitigation (DOMPurify)**: All data payloads entering and leaving `localStorage` are heavily sanitized via `DOMPurify`, ensuring zero possibility of cross-site scripting attacks via history injection.
 - **Anonymous Tracking**: The gamification engine relies entirely on a locally generated, anonymous device ID.
 
 ---
