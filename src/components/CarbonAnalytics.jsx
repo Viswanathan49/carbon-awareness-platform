@@ -480,16 +480,16 @@ export default function CarbonAnalytics() {
             </div>
           </div>
 
+            </div>
+          )}
         </div>
       </div>
 
       {/* ════════════════════════════════════════════════
-          HISTORY SECTION
-      ════════════════════════════════════════════════ */}
-      {/* ════════════════════════════════════════════════
           HISTORY & GOAL TRACKING SECTION
       ════════════════════════════════════════════════ */}
-      <div className="mt-10 bg-white dark:bg-[#16161a] rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
+      {hasCalculated && (
+        <div className="mt-10 bg-white dark:bg-[#16161a] rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm animate-fade-in">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-[#111111]/50">
           <div className="flex items-center gap-3">
             <span className="text-2xl" aria-hidden="true">📈</span>
@@ -575,9 +575,8 @@ export default function CarbonAnalytics() {
                 </div>
               </div>
             </div>
-          )}
-        </div>
-      </div>
+          </div>
+      )}
 
       {/* ════════════════════════════════════════════════
           DATA SOURCES & ABOUT FOOTER
