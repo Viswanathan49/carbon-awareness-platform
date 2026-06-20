@@ -656,6 +656,10 @@ export default function CarbonAnalytics() {
           </div>
         </div>
       </div>
+      
+      <div className="text-center text-xs text-gray-500 dark:text-gray-400 mt-12 pb-8">
+        Emission factors derived from DEFRA 2023 and US EPA published guidelines. All quantities normalized to annual kg CO₂e.
+      </div>
 
     </section>
   );

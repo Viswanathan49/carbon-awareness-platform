@@ -18,16 +18,39 @@
 ---
 
 ## 🎯 Chosen Vertical
-**Carbon Footprint Tracker**
-We chose this vertical to pivot the narrative from *guilt-inducing measurement* to *gamified action*. Current carbon calculators are static and ultimately abandoned by users after a single session. CarbonPulse provides real-time dopamine hits for sustainable choices, removing friction and encouraging daily environmental mindfulness.
+**Carbon Footprint Awareness Platform**
+We chose this vertical to pivot the narrative from *guilt-inducing measurement* to *gamified action*. 
+
+### How we address the Brief's Core Pillars:
+| Pillar | In the product |
+| --- | --- |
+| **Understand** | Real-time calculations break down the user's footprint by category and compare it against the global average and Paris-aligned sustainable targets via interactive Radar and Donut charts. |
+| **Track** | Gamification engine tracks a consecutive "Day Streak" and "Eco Points" stored securely in `localStorage`, giving instant feedback on daily eco-habits. |
+| **Reduce** | The Insights Wizard dynamically ranks the user's highest emission sources and categorizes tailored recommendations into an Effort vs Impact matrix (e.g., Quick Wins vs Strategic Planning). |
 
 ---
 
 ## 🧠 Approach and Logic
+
+### The Decision Flow (Smart, Context-Driven Assistant)
+```text
+User Inputs (Transit, Energy, Diet, Goods)
+        │
+        ▼
+Zero-Trust Engine  ──►  Per-Category kg CO₂e  ──►  Ranked by Size
+        │                                          │
+        ▼                                          ▼
+Comparison to Targets                  Insights Generator
+(Paris Agreement Benchmarks)             ├─ Filters highest impact areas
+                                         └─ Maps to Effort vs Impact matrix
+        │
+        ▼
+Save Snapshot (localStorage, Zero-Backend) → Gamification & Streaks
+```
+
 Our logic is based on creating a **Zero-Trust Client-Side Engine**.
-- **Performance over Bloat**: Instead of heavy backends, we process all emission factors dynamically in the browser using React state.
-- **Gamification Loop**: By tracking a `carbonScore` alongside `pointsEarned` (Eco Points) and a consecutive "5 Day Streak" metric, we incentivize users to return daily to log their eco-friendly habits.
-- **Data Visualizations**: We utilize Recharts to render an interactive `DonutChart` and an `Effort vs Impact Matrix` to reduce cognitive load on the user, instantly highlighting "Quick Wins".
+- **Logical Decision Making**: The system ranks the user's own emission categories and gives advice for the biggest contributors—a heavy driver is told about transport; a heavy-meat eater is told about diet.
+- **Emission Model Legitimacy**: Footprint calculations utilize standard emission factors derived from published datasets (DEFRA, EPA) normalized to annual kg CO₂e.
 
 ---
 
