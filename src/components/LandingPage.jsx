@@ -15,11 +15,9 @@ export default function LandingPage({ onStart, onStartTracker }) {
         className="relative z-10 mx-auto w-full max-w-4xl flex flex-col items-center justify-center text-center px-6"
         style={{ padding: '6rem 0 4rem' }}
       >
-        {/* Animated Background Blending Glows */}
+        {/* Elegant Animated Spotlight Blending */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[150%] max-w-[800px] pointer-events-none -z-10">
-          <div className="absolute top-1/4 left-1/4 w-64 sm:w-96 h-64 sm:h-96 bg-[#0FDE72] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] sm:blur-[120px] opacity-40 dark:opacity-20 animate-pulse" style={{ animationDuration: '4s' }}></div>
-          <div className="absolute top-1/4 right-1/4 w-64 sm:w-96 h-64 sm:h-96 bg-[#00D1FF] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] sm:blur-[120px] opacity-40 dark:opacity-20 animate-pulse" style={{ animationDuration: '5s' }}></div>
-          <div className="absolute bottom-0 left-1/3 w-64 sm:w-96 h-64 sm:h-96 bg-[#B026FF] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] sm:blur-[120px] opacity-40 dark:opacity-20 animate-pulse" style={{ animationDuration: '6s' }}></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[600px] h-[300px] sm:h-[400px] bg-[#0FDE72] rounded-[100%] opacity-15 dark:opacity-10 blur-[80px] sm:blur-[120px] animate-pulse" style={{ animationDuration: '4s' }}></div>
         </div>
         <h1
           className="text-gray-900 dark:text-white"
