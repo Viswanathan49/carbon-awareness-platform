@@ -161,23 +161,43 @@ export default function CarbonAnalytics() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-[#16161a] p-6 rounded-3xl shadow-lg border border-gray-200 dark:border-white/5 flex flex-col">
-             <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-4">Emissions Breakdown</h4>
-             <div className="w-full h-[220px] relative flex items-center justify-center">
-               <ResponsiveContainer width="100%" height="100%" minHeight={200}>
-                  <PieChart>
-                    <Pie data={chartData} dataKey="value" nameKey="name" innerRadius={55} outerRadius={85} paddingAngle={5}>
-                      {chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} stroke="transparent" />
-                      ))}
-                    </Pie>
-                    <Tooltip 
-                      contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px', color: '#fff' }} 
-                      itemStyle={{ color: '#fff', fontWeight: 'bold' }} 
-                    />
-                  </PieChart>
-               </ResponsiveContainer>
+          <div className="bg-white dark:bg-[#16161a] p-6 rounded-3xl shadow-lg border border-gray-200 dark:border-white/5 flex flex-col gap-6">
+             
+             <div>
+               <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-4">Emissions Breakdown</h4>
+               <div style={{ width: '100%', height: 220, position: 'relative' }}>
+                 <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie data={chartData} dataKey="value" nameKey="name" innerRadius={55} outerRadius={85} paddingAngle={5}>
+                        {chartData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} stroke="transparent" />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px', color: '#fff' }} 
+                        itemStyle={{ color: '#fff', fontWeight: 'bold' }} 
+                      />
+                    </PieChart>
+                 </ResponsiveContainer>
+               </div>
              </div>
+
+             <div className="border-t border-gray-200 dark:border-gray-800 pt-6">
+               <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-4">6-Month Projection</h4>
+               <div style={{ width: '100%', height: 180, position: 'relative' }}>
+                 <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={trendData} margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
+                      <XAxis dataKey="month" stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} />
+                      <YAxis stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} />
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px', color: '#fff' }} 
+                      />
+                      <Line type="monotone" dataKey="emissions" stroke="#0FDE72" strokeWidth={3} dot={{ fill: '#111', stroke: '#0FDE72', strokeWidth: 2, r: 4 }} />
+                    </LineChart>
+                 </ResponsiveContainer>
+               </div>
+             </div>
+
           </div>
 
         </div>
