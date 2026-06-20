@@ -345,7 +345,7 @@ export default function CarbonAnalytics() {
           <div className="bg-white dark:bg-[#16161a] p-6 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col gap-4">
             <h4 className="text-sm font-bold text-gray-900 dark:text-white">Global Benchmarks</h4>
             <div style={{ width: '100%', height: 160, position: 'relative' }}>
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                 <BarChart data={comparisonData} layout="vertical" margin={{ top: 0, right: 20, left: 20, bottom: 0 }}>
                   <XAxis type="number" hide />
                   <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748b' }} width={80} />
@@ -370,7 +370,7 @@ export default function CarbonAnalytics() {
             
             {/* ── PIE CHART ── */}
             <div style={{ width: '100%', height: 180, position: 'relative', marginBottom: '10px' }}>
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                 <PieChart>
                   <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={45} outerRadius={75} paddingAngle={4}>
                     {pieData.map((entry, i) => (
