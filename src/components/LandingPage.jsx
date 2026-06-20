@@ -6,7 +6,7 @@ export default function LandingPage({ onStart, onStartTracker }) {
   const t = translations[language]
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden bg-gray-50 dark:bg-[#0a0a0a] text-gray-900 dark:text-white transition-colors duration-300">
+    <div className="flex flex-col relative overflow-hidden bg-gray-50 dark:bg-[#0a0a0a] text-gray-900 dark:text-white transition-colors duration-300">
       {/* Ambient background grid */}
       <div className="bg-tech-grid" style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }} />
 
@@ -15,12 +15,11 @@ export default function LandingPage({ onStart, onStartTracker }) {
         style={{
           position: 'relative',
           zIndex: 1,
-          minHeight: '100vh',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '2rem 1.5rem',
+          padding: '4rem 1.5rem 3rem',
           textAlign: 'center',
         }}
       >
@@ -30,11 +29,11 @@ export default function LandingPage({ onStart, onStartTracker }) {
           style={{
             fontFamily: 'var(--font-display)',
             fontWeight: 900,
-            fontSize: 'clamp(2.5rem, 8vw, 6rem)',
-            letterSpacing: '-0.04em',
-            lineHeight: 1.05,
-            margin: '0 0 1.5rem',
-            maxWidth: '900px',
+            fontSize: 'clamp(1.8rem, 5vw, 3.5rem)',
+            letterSpacing: '-0.03em',
+            lineHeight: 1.1,
+            margin: '0 0 1rem',
+            maxWidth: '700px',
           }}
         >
           EMPOWER YOUR{' '}
@@ -46,12 +45,12 @@ export default function LandingPage({ onStart, onStartTracker }) {
         <p
           className="text-gray-600 dark:text-gray-300"
           style={{
-            marginTop: '0.5rem',
-            fontSize: 'clamp(1rem, 2.5vw, 1.35rem)',
-            maxWidth: '640px',
+            marginTop: '0.25rem',
+            fontSize: 'clamp(0.9rem, 2vw, 1.1rem)',
+            maxWidth: '560px',
             fontWeight: 300,
             lineHeight: 1.6,
-            marginBottom: '2.5rem',
+            marginBottom: '2rem',
           }}
         >
           The ultimate client-side engine for carbon awareness.{' '}
@@ -71,63 +70,43 @@ export default function LandingPage({ onStart, onStartTracker }) {
               onStart && onStart()
             }}
             aria-label="Start your carbon journey and scroll to features"
-            style={{ textDecoration: 'none' }}
+            style={{ textDecoration: 'none', padding: '12px 24px', fontSize: '0.95rem' }}
           >
             ✨ {t.startJourney || t.cta || 'Start Your Journey'}
           </a>
 
           <button
             className="btn-secondary"
-            style={{ padding: '14px 28px', borderRadius: '12px', fontSize: '1.05rem', fontWeight: '600' }}
+            style={{ padding: '12px 24px', borderRadius: '12px', fontSize: '0.95rem', fontWeight: '600' }}
             onClick={onStartTracker}
             aria-label="Open the daily habits checklist"
           >
             📅 {t.dailyTracker || t.ctaTracker || 'Daily Tracker'}
           </button>
         </div>
-
-        {/* Scroll nudge arrow */}
-        <a
-          href="#features"
-          onClick={(e) => {
-            e.preventDefault()
-            document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })
-          }}
-          aria-label="Scroll to features"
-          style={{
-            position: 'absolute',
-            bottom: '2rem',
-            color: 'rgba(15,222,114,0.6)',
-            fontSize: '1.75rem',
-            textDecoration: 'none',
-            animation: 'floatOrb 2s infinite ease-in-out alternate',
-          }}
-        >
-          ↓
-        </a>
       </section>
 
       {/* ─── FEATURES SECTION ─── */}
       <section
         id="features"
         aria-label="Advanced Command Modules"
-        className="relative z-10 min-h-screen flex flex-col items-center py-24 px-6 bg-white/40 dark:bg-black/40 backdrop-blur-md"
+        className="relative z-10 flex flex-col items-center py-12 px-6 bg-white/40 dark:bg-black/40 backdrop-blur-md"
       >
         <h2
           className="text-neon-glow"
           style={{
             fontFamily: 'var(--font-display)',
             fontWeight: 800,
-            fontSize: 'clamp(1.75rem, 4vw, 3rem)',
+            fontSize: 'clamp(1.4rem, 3vw, 2.2rem)',
             color: '#0FDE72',
-            marginBottom: '0.75rem',
+            marginBottom: '0.5rem',
             textAlign: 'center',
             letterSpacing: '-0.02em',
           }}
         >
           Advanced Command Modules
         </h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-14 text-center text-lg">
+        <p className="text-gray-600 dark:text-gray-400 mb-10 text-center text-base">
           Every feature engineered for zero-latency, zero-database performance.
         </p>
 
@@ -136,41 +115,41 @@ export default function LandingPage({ onStart, onStartTracker }) {
           className="feature-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '1.5rem',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gap: '1.25rem',
             width: '100%',
             maxWidth: '1100px',
           }}
         >
           {/* Wizard card */}
-          <div className="feature-column glass-card" style={{ padding: '2rem', borderRadius: '16px' }}>
-            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🧠</div>
-            <h3 className="feature-title" style={{ color: '#0FDE72', fontWeight: 700, marginBottom: '0.5rem' }}>
+          <div className="feature-column glass-card bg-white/80 dark:bg-transparent" style={{ padding: '1.5rem', borderRadius: '16px' }}>
+            <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🧠</div>
+            <h3 className="feature-title" style={{ color: '#0FDE72', fontWeight: 700, marginBottom: '0.4rem' }}>
               {t.feat1Title || 'Insights Wizard'}
             </h3>
-            <p className="feature-desc" style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>
+            <p className="feature-desc text-gray-600 dark:text-gray-400" style={{ lineHeight: 1.6 }}>
               {t.feat1Desc || 'A multi-step engine that calculates your footprint based on transit, diet, and energy choices — then delivers hyper-targeted advice.'}
             </p>
           </div>
 
           {/* Tracker card */}
-          <div className="feature-column glass-card" style={{ padding: '2rem', borderRadius: '16px' }}>
-            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🏆</div>
-            <h3 className="feature-title" style={{ color: '#0FDE72', fontWeight: 700, marginBottom: '0.5rem' }}>
+          <div className="feature-column glass-card bg-white/80 dark:bg-transparent" style={{ padding: '1.5rem', borderRadius: '16px' }}>
+            <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🏆</div>
+            <h3 className="feature-title" style={{ color: '#0FDE72', fontWeight: 700, marginBottom: '0.4rem' }}>
               {t.feat2Title || 'Gamified Tracker'}
             </h3>
-            <p className="feature-desc" style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>
+            <p className="feature-desc text-gray-600 dark:text-gray-400" style={{ lineHeight: 1.6 }}>
               {t.feat2Desc || 'Log daily eco-habits and watch your carbon score drop in real time. Instant rewards. Zero friction.'}
             </p>
           </div>
 
           {/* Rewards / Auth card */}
-          <div className="feature-column glass-card" style={{ padding: '2rem', borderRadius: '16px' }}>
-            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🔒</div>
-            <h3 className="feature-title" style={{ color: '#0FDE72', fontWeight: 700, marginBottom: '0.5rem' }}>
+          <div className="feature-column glass-card bg-white/80 dark:bg-transparent" style={{ padding: '1.5rem', borderRadius: '16px' }}>
+            <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🔒</div>
+            <h3 className="feature-title" style={{ color: '#0FDE72', fontWeight: 700, marginBottom: '0.4rem' }}>
               {t.feat3Title || 'Zero-Trust Auth'}
             </h3>
-            <p className="feature-desc" style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>
+            <p className="feature-desc text-gray-600 dark:text-gray-400" style={{ lineHeight: 1.6 }}>
               {t.feat3Desc || 'Your data never leaves the browser. Pure localStorage persistence — no databases, no API keys, no exposed attack surface.'}
             </p>
           </div>

@@ -131,52 +131,6 @@ function App() {
         )}
         
         {view === 'landing' && (
-          <div className="welcome-card bg-white dark:bg-[#121212] text-gray-900 dark:text-white" style={{ marginTop: '3rem' }}>
-            <span className="badge">{t.tag}</span>
-            <h1 className="welcome-title text-gray-900 dark:text-white">{t.welcome}</h1>
-            <p className="welcome-subtitle text-gray-600 dark:text-gray-300">{t.subtitle}</p>
-            
-            <div className="my-8 p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 border-dashed">
-              <h3 className="font-display text-sky-500 dark:text-sky-400 mt-0">
-                {t.cardTitle}
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
-                {t.comingSoon}
-              </p>
-            </div>
-
-            <div className="score-controls">
-              <button 
-                id="increment-score-btn"
-                className="btn-neon" 
-                onClick={() => addCarbonScore(10)}
-              >
-                ⚡ {t.actionIncrement}
-              </button>
-              <button 
-                id="decrement-score-btn"
-                className="btn-neon" 
-                style={{ 
-                  color: 'var(--accent-secondary)', 
-                  borderColor: 'rgba(var(--accent-secondary-rgb), 0.2)',
-                  background: 'rgba(var(--accent-secondary-rgb), 0.04)'
-                }}
-                onClick={() => addCarbonScore(-10)}
-              >
-                🌿 {t.actionDecrement}
-              </button>
-              <button 
-                id="reset-score-btn"
-                className="btn-secondary" 
-                onClick={() => setCarbonScore(0)}
-              >
-                🔄 {t.actionReset}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {view === 'landing' && (
           <>
             <CommandModules />
             <CarbonAnalytics />
