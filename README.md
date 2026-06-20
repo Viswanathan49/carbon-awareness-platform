@@ -19,7 +19,8 @@
 
 ## 🎯 Chosen Vertical
 **Carbon Footprint Awareness Platform**
-We chose this vertical to pivot the narrative from *guilt-inducing measurement* to *gamified action*. 
+
+We chose this vertical to pivot the narrative from *guilt-inducing measurement* to *gamified action*. Current carbon calculators are static and ultimately abandoned by users after a single session. CarbonPulse provides real-time dopamine hits for sustainable choices, removing friction and encouraging daily environmental mindfulness.
 
 ### How we address the Brief's Core Pillars:
 | Pillar | In the product |
@@ -30,46 +31,118 @@ We chose this vertical to pivot the narrative from *guilt-inducing measurement* 
 
 ---
 
-## 🧠 Approach and Logic
+## 🏗️ System Architecture
 
-### The Decision Flow (Smart, Context-Driven Assistant)
-```text
-User Inputs (Transit, Energy, Diet, Goods)
-        │
-        ▼
-Zero-Trust Engine  ──►  Per-Category kg CO₂e  ──►  Ranked by Size
-        │                                          │
-        ▼                                          ▼
-Comparison to Targets                  Insights Generator
-(Paris Agreement Benchmarks)             ├─ Filters highest impact areas
-                                         └─ Maps to Effort vs Impact matrix
-        │
-        ▼
-Save Snapshot (localStorage, Zero-Backend) → Gamification & Streaks
+Our platform is engineered as a zero-trust, client-first Progressive Web App (PWA). By decoupling from a traditional backend database, we ensure infinite scalability, instantaneous real-time UI updates, and absolute privacy for user data.
+
+```mermaid
+graph TD
+    Client[Browser Client]
+    Nginx[Cloud Run Nginx Container]
+    Zustand[(Zustand State Store)]
+    Local[(Browser LocalStorage)]
+    
+    subgraph Google Cloud Platform
+        Nginx
+    end
+    
+    subgraph User Device
+        Client
+        Zustand
+        Local
+        
+        Client <-->|Two-way Binding| Zustand
+        Zustand -.->|Persists Encrypted Data| Local
+    end
+    
+    Nginx -->|Serves Static Assets| Client
 ```
 
-Our logic is based on creating a **Zero-Trust Client-Side Engine**.
-- **Logical Decision Making**: The system ranks the user's own emission categories and gives advice for the biggest contributors—a heavy driver is told about transport; a heavy-meat eater is told about diet.
-- **Emission Model Legitimacy**: Footprint calculations utilize standard emission factors derived from published datasets (DEFRA, EPA) normalized to annual kg CO₂e.
+### Technical Stack
+- **Frontend Framework**: React 18 powered by Vite and SWC (Single Web Compiler).
+- **State Management**: Zustand for lightning-fast, boilerplate-free state persistence.
+- **Data Visualization**: Recharts for interactive SVG Donut and Radar mapping.
+- **Styling**: Vanilla CSS with custom properties (CSS variables) to hit strict performance budgets.
+- **Deployment**: Multi-stage Docker deployment to Google Cloud Run.
+
+---
+
+## 🧠 Approach and Logic
+
+Our logic revolves around context-aware dynamic routing. The platform processes user inputs through an internal deterministic rules engine to map the highest emission priorities dynamically.
+
+### The Decision Flow (Smart, Context-Driven Assistant)
+
+```mermaid
+flowchart TD
+    A[User Inputs] --> B(Transit Engine)
+    A --> C(Home Energy Engine)
+    A --> D(Diet & Consumption Engine)
+    
+    B --> E{Aggregate Carbon Engine}
+    C --> E
+    D --> E
+    
+    E -->|Calculates Total kg CO₂e| F(Comparison Engine)
+    F -->|Benchmarking| G[Radar Target Chart]
+    
+    E -->|Ranks by Volume| H(Insights Generator)
+    H -->|Filters Top Impact Area| I[Actionable Effort Matrix]
+    
+    I --> J((Save Snapshot to LocalStorage))
+    J --> K[Gamification Streaks & Badges]
+```
+
+- **Logical Decision Making**: The system ranks the user's own emission categories and gives advice exclusively for the biggest contributors. A heavy driver is fed transport metrics; a heavy-meat eater is fed diet modifications.
+- **Cognitive Load Reduction**: Recommendations are structurally mapped into an Effort vs. Impact matrix so users can visually identify "Quick Wins" instead of reading lists.
+
+---
+
+## 📊 Emission Model & Factors
+
+To ensure absolute legitimacy in footprint calculations, our calculations utilize standard emission factors derived from published datasets. All quantities are normalized to **annual kg CO₂e**.
+
+| Category | Sub-Category | Emission Factor | Source Citation |
+| :--- | :--- | :--- | :--- |
+| **Transport** | Petrol Car | 0.21 kg CO₂e / km | UK DEFRA 2023 |
+| **Transport** | Diesel Car | 0.17 kg CO₂e / km | UK DEFRA 2023 |
+| **Transport** | Electric Vehicle | 0.05 kg CO₂e / km | US EPA / NREL |
+| **Diet** | Meat-Heavy | 5.5 kg CO₂e / day | Our World in Data |
+| **Diet** | Vegan / Plant | 1.5 kg CO₂e / day | Our World in Data |
+| **Home Energy**| Grid (Mixed) | 0.23 kg CO₂e / kWh | US EPA eGRID |
 
 ---
 
 ## ⚙️ How the Solution Works
-1. **The Insights Wizard**: Upon initialization, the user inputs their daily habits across Transit, Home Energy, Diet, and Shopping.
-2. **Real-time Processing**: Using hardcoded, science-backed Emission Factors (e.g., Petrol: 0.21 kg CO₂e/km, Meat: 5.5 kg CO₂e/meal), the engine instantly calculates the total footprint.
-3. **Actionable Recommendations**: The system generates a prioritized list of actions based on the user's highest emission category, mapping them to an Effort/Impact grid.
-4. **Secure Storage**: All session states, streaks, and preferences are cryptographically hashed and saved via `localStorage`. The server never touches PII.
+
+1. **The Insights Wizard**: Upon initialization, the user interacts with responsive range sliders representing Transit, Home Energy, Diet, and Shopping.
+2. **Real-time Processing**: Using the embedded `useMemo` hooks, the engine instantly calculates the total footprint on every slider tick without triggering cascading unmounts.
+3. **Data Visualizations**: A `DonutChart` displays the breakdown, while a `RadarChart` overlays the user's footprint onto the Paris Agreement's 2.1-tonne target threshold.
+4. **Actionable Recommendations**: The system generates a prioritized list of actions based on the highest emission category and outputs a 2x2 grid representing Effort vs Impact.
+5. **Secure Storage**: Session states, points, and streaks are safely saved via `localStorage`. The server never touches PII.
+
+---
+
+## 🛡️ Security & Privacy Protocols
+
+CarbonPulse runs on a **Zero-Trust Architecture**:
+- **No Backend Databases**: We intentionally avoided storing user data on a central database. 
+- **Content Security Policy**: `index.html` implements a strict CSP meta tag (`default-src 'self'`) to explicitly block XSS attacks and unauthorized remote script execution.
+- **Anonymous Tracking**: The gamification engine relies entirely on a locally generated, anonymous device ID.
 
 ---
 
 ## 📝 Assumptions Made
-- **Emission Averages**: We assume global average emission factors for transit, energy, and diet to maintain a streamlined UX without requiring users to input their exact geographic locale.
-- **Target Threshold**: We assume a "Paris Agreement" personal target of 2.1 tonnes per year (roughly 40kg per week) as the benchmark for the Radar Chart comparisons.
-- **Single-User Device**: Since the data is persisted via `localStorage`, we assume the application is running on a personal device rather than a public terminal.
+
+- **Global Averages**: We assume global average emission factors to maintain a streamlined UX without requiring users to input their exact geographic locale.
+- **Target Threshold**: We assume a "Paris Agreement" personal target of 2.1 tonnes per year (roughly 40kg per week) as the benchmark for Radar Chart comparisons.
+- **Single-User Device**: Since the data is persisted via `localStorage`, we assume the application is running on a personal device.
+- **Behavioral Psychology**: We assume that gamification (streaks, badges, points) creates better long-term retention for eco-habits than traditional data readouts.
 
 ---
 
 ## 💻 Installation & Evaluation
+
 To run the CarbonPulse platform locally or run evaluation tests:
 
 1. **Clone the repository**:
@@ -80,7 +153,7 @@ To run the CarbonPulse platform locally or run evaluation tests:
    ```bash
    npm install
    ```
-3. **Run the testing suite**:
+3. **Run the testing suite (Vitest UI Tests)**:
    ```bash
    npm run test
    ```
