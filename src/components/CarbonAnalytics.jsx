@@ -575,7 +575,9 @@ export default function CarbonAnalytics() {
                 </div>
               </div>
             </div>
-          </div>
+          )}
+        </div>
+      </div>
       )}
 
       {/* ════════════════════════════════════════════════
