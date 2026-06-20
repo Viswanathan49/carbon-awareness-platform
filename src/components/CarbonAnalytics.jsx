@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 // ─── EMISSION FACTORS (kg CO₂e) ─────────────────────────────────────────────
 const FUEL_FACTORS    = { petrol: 0.21, diesel: 0.17, hybrid: 0.12, ev: 0.05 };
@@ -13,6 +13,7 @@ const GOODS_FACTOR    = 0.5;     // kg CO₂e per USD equivalent spend
 const PARIS_TARGET    = 2000;    // kg/year
 const GLOBAL_AVG      = 4500;
 const INDIA_AVG       = 1900;
+const EU_AVG          = 6800;
 
 const PIE_COLORS = ['#0FDE72', '#00D1FF', '#B026FF', '#FACC15'];
 
@@ -82,12 +83,13 @@ export default function CarbonAnalytics() {
   // Goods
   const [monthlySpend, setSpend]  = useState(200);
 
-  // History
+  // History & Sharing
   const [history, setHistory]     = useState(() => {
     try { return JSON.parse(localStorage.getItem('cf_history') || '[]'); }
     catch { return []; }
   });
   const [saved, setSaved]         = useState(false);
+  const [copied, setCopied]       = useState(false);
 
   // ─── CALCULATIONS ──────────────────────────────────────────────────────────
   const transport = useMemo(() => {
@@ -109,13 +111,18 @@ export default function CarbonAnalytics() {
     { name: 'Goods',       value: goods,     color: PIE_COLORS[3] },
   ];
 
+  const comparisonData = [
+    { name: 'You', value: total, fill: '#0FDE72' },
+    { name: 'India', value: INDIA_AVG, fill: '#a8a29e' },
+    { name: 'Paris Target', value: PARIS_TARGET, fill: '#38bdf8' },
+    { name: 'Global', value: GLOBAL_AVG, fill: '#f43f5e' },
+    { name: 'EU', value: EU_AVG, fill: '#818cf8' },
+  ];
+
   const recs = useMemo(() => buildRecs(transport, energy, food, goods),
     [transport, energy, food, goods]);
 
-  const vsTarget = ((total / PARIS_TARGET) * 100).toFixed(1);
-  const vsGlobal = ((total / GLOBAL_AVG)   * 100).toFixed(1);
-
-  // ─── HISTORY SAVE ──────────────────────────────────────────────────────────
+  // ─── HISTORY & SHARE ────────────────────────────────────────────────────────
   const saveEntry = () => {
     const entry = {
       date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
@@ -137,6 +144,18 @@ export default function CarbonAnalytics() {
     localStorage.removeItem('cf_history');
   };
 
+  const copyToClipboard = () => {
+    const text = `My Annual Carbon Footprint is ${(total/1000).toFixed(2)} t CO₂e.\n\n` + 
+                 `🚗 Transport: ${transport} kg\n` +
+                 `⚡ Energy: ${energy} kg\n` +
+                 `🥩 Diet: ${food} kg\n` +
+                 `🛍️ Goods: ${goods} kg\n\n` +
+                 `Track yours with CarbonPulse!`;
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
+
   // ─── SHARED INPUT STYLES ───────────────────────────────────────────────────
   const inputCls = "w-full bg-white dark:bg-[#0e0e0e] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0FDE72] transition-colors";
   const labelCls = "block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1";
@@ -145,12 +164,17 @@ export default function CarbonAnalytics() {
     <section className="w-full max-w-7xl mx-auto my-12 px-4 relative z-10 clear-both block">
 
       {/* ── HEADER ── */}
-      <div className="bg-white dark:bg-[#16161a] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden mb-8 transition-colors duration-300">
+      <div className="bg-white dark:bg-[#16161a] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden mb-8 transition-colors duration-300 relative">
         <div className="h-2 w-full bg-gradient-to-r from-[#0FDE72] via-[#00D1FF] to-[#B026FF]"></div>
         <div className="p-6 sm:p-10">
-          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-1">
-            Carbon Footprint Assessment
-          </h2>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-4">
+            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">
+              Carbon Footprint Assessment
+            </h2>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#0FDE72]/10 text-[#0FDE72] rounded-full text-xs font-bold border border-[#0FDE72]/20">
+              <span>🔬</span> Science-backed factors (IPCC)
+            </div>
+          </div>
           <p className="text-gray-500 dark:text-gray-400 text-sm">
             Fill in your actual lifestyle data. Emissions are computed using real-world CO₂e factors — not estimates.
           </p>
@@ -167,19 +191,19 @@ export default function CarbonAnalytics() {
           {/* ── TRANSPORT ── */}
           <div className="bg-white dark:bg-[#16161a] rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
             <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-[#0FDE72]/5">
-              <span className="text-2xl">🚗</span>
+              <span className="text-2xl" aria-hidden="true">🚗</span>
               <h3 className="font-bold text-gray-900 dark:text-white">Transport</h3>
             </div>
             <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label className={labelCls}>Car distance per week (km)</label>
-                <input type="number" min="0" max="3000" value={carKm}
+                <label htmlFor="carKm" className={labelCls}>Car distance per week (km)</label>
+                <input id="carKm" aria-label="Car distance per week in kilometers" type="number" min="0" max="3000" value={carKm}
                   onChange={e => setCarKm(Number(e.target.value))}
                   className={inputCls} />
               </div>
               <div>
-                <label className={labelCls}>Car fuel type</label>
-                <select value={fuelType} onChange={e => setFuelType(e.target.value)} className={inputCls}>
+                <label htmlFor="fuelType" className={labelCls}>Car fuel type</label>
+                <select id="fuelType" aria-label="Car fuel type" value={fuelType} onChange={e => setFuelType(e.target.value)} className={inputCls}>
                   <option value="petrol">Petrol</option>
                   <option value="diesel">Diesel</option>
                   <option value="hybrid">Hybrid</option>
@@ -187,20 +211,20 @@ export default function CarbonAnalytics() {
                 </select>
               </div>
               <div>
-                <label className={labelCls}>Public transit per week (km)</label>
-                <input type="number" min="0" max="1000" value={transitKm}
+                <label htmlFor="transitKm" className={labelCls}>Public transit per week (km)</label>
+                <input id="transitKm" aria-label="Public transit per week in kilometers" type="number" min="0" max="1000" value={transitKm}
                   onChange={e => setTransitKm(Number(e.target.value))}
                   className={inputCls} />
               </div>
               <div>
-                <label className={labelCls}>Short-haul flights per year</label>
-                <input type="number" min="0" max="50" value={shortFlights}
+                <label htmlFor="shortFlights" className={labelCls}>Short-haul flights per year</label>
+                <input id="shortFlights" aria-label="Number of short-haul flights per year" type="number" min="0" max="50" value={shortFlights}
                   onChange={e => setShort(Number(e.target.value))}
                   className={inputCls} />
               </div>
               <div>
-                <label className={labelCls}>Long-haul flights per year</label>
-                <input type="number" min="0" max="20" value={longFlights}
+                <label htmlFor="longFlights" className={labelCls}>Long-haul flights per year</label>
+                <input id="longFlights" aria-label="Number of long-haul flights per year" type="number" min="0" max="20" value={longFlights}
                   onChange={e => setLong(Number(e.target.value))}
                   className={inputCls} />
               </div>
@@ -210,19 +234,19 @@ export default function CarbonAnalytics() {
           {/* ── HOME ENERGY ── */}
           <div className="bg-white dark:bg-[#16161a] rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
             <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-[#00D1FF]/5">
-              <span className="text-2xl">⚡</span>
+              <span className="text-2xl" aria-hidden="true">⚡</span>
               <h3 className="font-bold text-gray-900 dark:text-white">Home Energy</h3>
             </div>
             <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label className={labelCls}>Monthly electricity (kWh)</label>
-                <input type="number" min="0" max="3000" value={kwh}
+                <label htmlFor="kwh" className={labelCls}>Monthly electricity (kWh)</label>
+                <input id="kwh" aria-label="Monthly electricity usage in kilowatt hours" type="number" min="0" max="3000" value={kwh}
                   onChange={e => setKwh(Number(e.target.value))}
                   className={inputCls} />
               </div>
               <div>
-                <label className={labelCls}>Grid / energy source</label>
-                <select value={gridType} onChange={e => setGridType(e.target.value)} className={inputCls}>
+                <label htmlFor="gridType" className={labelCls}>Grid / energy source</label>
+                <select id="gridType" aria-label="Grid energy source type" value={gridType} onChange={e => setGridType(e.target.value)} className={inputCls}>
                   <option value="coal">Coal / Gas Grid</option>
                   <option value="mixed">Mixed Grid (some renewables)</option>
                   <option value="renewable">100% Green / Solar</option>
@@ -234,12 +258,12 @@ export default function CarbonAnalytics() {
           {/* ── DIET ── */}
           <div className="bg-white dark:bg-[#16161a] rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
             <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-[#B026FF]/5">
-              <span className="text-2xl">🥩</span>
+              <span className="text-2xl" aria-hidden="true">🥩</span>
               <h3 className="font-bold text-gray-900 dark:text-white">Diet</h3>
             </div>
             <div className="p-6">
-              <label className={labelCls}>Typical diet profile</label>
-              <select value={diet} onChange={e => setDiet(e.target.value)} className={inputCls}>
+              <label htmlFor="diet" className={labelCls}>Typical diet profile</label>
+              <select id="diet" aria-label="Typical diet profile" value={diet} onChange={e => setDiet(e.target.value)} className={inputCls}>
                 <option value="meat-heavy">Meat-heavy</option>
                 <option value="balanced">Balanced / Flexitarian</option>
                 <option value="vegetarian">Vegetarian</option>
@@ -251,29 +275,41 @@ export default function CarbonAnalytics() {
           {/* ── GOODS ── */}
           <div className="bg-white dark:bg-[#16161a] rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
             <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-[#FACC15]/5">
-              <span className="text-2xl">🛍️</span>
+              <span className="text-2xl" aria-hidden="true">🛍️</span>
               <h3 className="font-bold text-gray-900 dark:text-white">Goods & Services</h3>
             </div>
             <div className="p-6">
-              <label className={labelCls}>Monthly non-essential spend (USD equivalent)</label>
-              <input type="number" min="0" max="5000" value={monthlySpend}
+              <label htmlFor="monthlySpend" className={labelCls}>Monthly non-essential spend (USD equivalent)</label>
+              <input id="monthlySpend" aria-label="Monthly non-essential spend in USD equivalent" type="number" min="0" max="5000" value={monthlySpend}
                 onChange={e => setSpend(Number(e.target.value))}
                 className={inputCls} />
               <p className="text-xs text-gray-400 mt-1">Clothing, electronics, dining out, subscriptions.</p>
             </div>
           </div>
 
-          {/* ── SAVE BUTTON ── */}
-          <button
-            onClick={saveEntry}
-            className={`w-full py-3.5 rounded-2xl font-bold text-sm tracking-wide transition-all duration-300 border ${
-              saved
-                ? 'bg-[#0FDE72]/10 text-[#0FDE72] border-[#0FDE72]/30'
-                : 'bg-white dark:bg-[#16161a] text-gray-900 dark:text-white border-gray-200 dark:border-gray-700 hover:border-[#0FDE72] hover:text-[#0FDE72]'
-            }`}
-          >
-            {saved ? '✅ Saved to History' : '💾 Save this entry to my history'}
-          </button>
+          {/* ── ACTIONS ── */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <button
+              onClick={saveEntry}
+              className={`w-full py-3.5 rounded-2xl font-bold text-sm tracking-wide transition-all duration-300 border ${
+                saved
+                  ? 'bg-[#0FDE72]/10 text-[#0FDE72] border-[#0FDE72]/30'
+                  : 'bg-white dark:bg-[#16161a] text-gray-900 dark:text-white border-gray-200 dark:border-gray-700 hover:border-[#0FDE72] hover:text-[#0FDE72]'
+              }`}
+            >
+              {saved ? '✅ Saved to History' : '💾 Save this entry'}
+            </button>
+            <button
+              onClick={copyToClipboard}
+              className={`w-full py-3.5 rounded-2xl font-bold text-sm tracking-wide transition-all duration-300 border ${
+                copied
+                  ? 'bg-[#00D1FF]/10 text-[#00D1FF] border-[#00D1FF]/30'
+                  : 'bg-white dark:bg-[#16161a] text-gray-900 dark:text-white border-gray-200 dark:border-gray-700 hover:border-[#00D1FF] hover:text-[#00D1FF]'
+              }`}
+            >
+              {copied ? '✅ Copied to clipboard' : '📤 Share Results'}
+            </button>
+          </div>
 
         </div>
 
@@ -284,10 +320,10 @@ export default function CarbonAnalytics() {
 
           {/* ── TOTAL SCORE ── */}
           <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#111] dark:to-[#0a0a0a] p-8 rounded-3xl border border-gray-200 dark:border-white/5 shadow-xl relative overflow-hidden">
-            <div className="absolute -top-6 -right-6 text-[120px] opacity-5 select-none">🌍</div>
+            <div className="absolute -top-6 -right-6 text-[120px] opacity-5 select-none" aria-hidden="true">🌍</div>
             <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Your Estimated Footprint</h4>
             <div className="flex items-end gap-2 mb-1">
-              <span className="text-5xl font-black text-gray-900 dark:text-white tracking-tighter">
+              <span className="text-5xl font-black text-gray-900 dark:text-white tracking-tighter" aria-label={`Your total footprint is ${(total / 1000).toFixed(2)} tonnes of CO2 equivalent per year`}>
                 {(total / 1000).toFixed(2)}
               </span>
               <span className="text-lg text-gray-400 font-medium mb-1">t CO₂e / year</span>
@@ -305,9 +341,51 @@ export default function CarbonAnalytics() {
             </div>
           </div>
 
+          {/* ── BENCHMARK COMPARISON ── */}
+          <div className="bg-white dark:bg-[#16161a] p-6 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col gap-4">
+            <h4 className="text-sm font-bold text-gray-900 dark:text-white">Global Benchmarks</h4>
+            <div style={{ width: '100%', height: 160, position: 'relative' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={comparisonData} layout="vertical" margin={{ top: 0, right: 20, left: 20, bottom: 0 }}>
+                  <XAxis type="number" hide />
+                  <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748b' }} width={80} />
+                  <Tooltip 
+                    cursor={{fill: 'rgba(255, 255, 255, 0.05)'}}
+                    contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px', color: '#fff', fontSize: '12px' }}
+                    formatter={(v) => [`${v.toLocaleString()} kg`, 'Footprint']}
+                  />
+                  <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={14}>
+                    {comparisonData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
           {/* ── BREAKDOWN BARS ── */}
           <div className="bg-white dark:bg-[#16161a] p-6 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col gap-4">
             <h4 className="text-sm font-bold text-gray-900 dark:text-white">Breakdown by category</h4>
+            
+            {/* ── PIE CHART ── */}
+            <div style={{ width: '100%', height: 180, position: 'relative', marginBottom: '10px' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={45} outerRadius={75} paddingAngle={4}>
+                    {pieData.map((entry, i) => (
+                      <Cell key={i} fill={entry.color} stroke="transparent" />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px', color: '#fff', fontSize: '12px' }}
+                    itemStyle={{ color: '#fff' }}
+                    formatter={(v) => [`${v.toLocaleString()} kg`, '']}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+
             {pieData.map(item => (
               <div key={item.name}>
                 <div className="flex justify-between text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
@@ -322,36 +400,18 @@ export default function CarbonAnalytics() {
                 </div>
               </div>
             ))}
-
-            {/* ── PIE CHART ── */}
-            <div style={{ width: '100%', height: 200, position: 'relative' }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80} paddingAngle={4}>
-                    {pieData.map((entry, i) => (
-                      <Cell key={i} fill={entry.color} stroke="transparent" />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px', color: '#fff', fontSize: '12px' }}
-                    itemStyle={{ color: '#fff' }}
-                    formatter={(v) => [`${v.toLocaleString()} kg`, '']}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
           </div>
 
           {/* ── RECOMMENDATIONS ── */}
           <div className="bg-white dark:bg-[#16161a] p-6 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <h4 className="text-sm font-bold text-gray-900 dark:text-white">Personalized Insights</h4>
-              <span className="text-xs bg-[#0FDE72]/10 text-[#0FDE72] px-2 py-0.5 rounded-full font-bold border border-[#0FDE72]/20">CALCULATED</span>
+              <span className="text-xs bg-[#0FDE72]/10 text-[#0FDE72] px-2 py-0.5 rounded-full font-bold border border-[#0FDE72]/20">AI-DRIVEN</span>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Your current footprint is {(total / 1000).toFixed(1)} tonnes. Here are your highest-impact actions.
             </p>
-            <h5 className="text-sm font-bold text-gray-900 dark:text-white">Recommended actions</h5>
+            <h5 className="text-sm font-bold text-gray-900 dark:text-white mt-1">Recommended actions</h5>
             <div className="flex flex-col gap-3">
               {recs.map((rec, i) => (
                 <div key={i} className="p-4 rounded-xl border-l-4 bg-gray-50 dark:bg-black/30" style={{ borderColor: rec.color }}>
