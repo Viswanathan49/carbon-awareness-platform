@@ -109,7 +109,7 @@ export default function CarbonAnalytics() {
   const labelCls = "block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1";
 
   return (
-    <section className="w-full max-w-7xl mx-auto my-12 px-4 relative z-10 clear-both block">
+    <section id="assessment" className="w-full max-w-7xl mx-auto my-12 px-4 relative z-10 clear-both block">
 
       {/* ── HEADER ── */}
       <div className="bg-white dark:bg-[#16161a] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden mb-8 transition-colors duration-300 relative">
@@ -139,7 +139,12 @@ export default function CarbonAnalytics() {
           onSubmit={(e) => {
             e.preventDefault();
             setHasCalculated(true);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const el = document.getElementById('assessment');
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
           }}
         >
 
