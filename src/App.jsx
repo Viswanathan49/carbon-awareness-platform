@@ -13,26 +13,14 @@ import './App.css'
 function App() {
   const { 
     language, 
-    carbonScore, 
-    pointsEarned, 
     toggleLanguage, 
-    addCarbonScore, 
-    setCarbonScore, 
     theme, 
     toggleTheme 
   } = useStore()
   
   const [view, setView] = useState('landing')
-  const [isPulsing, setIsPulsing] = useState(false)
   
   const t = translations[language]
-
-  // Dopamine pulse animation whenever scores change
-  useEffect(() => {
-    setIsPulsing(true)
-    const timer = setTimeout(() => setIsPulsing(false), 450)
-    return () => clearTimeout(timer)
-  }, [carbonScore, pointsEarned])
 
   useEffect(() => {
     if (theme === 'dark') {

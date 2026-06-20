@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const TOUR_STEPS = [
   { title: "Welcome to CarbonPulse", text: "Your personal environmental command center. Let's initialize your profile." },
@@ -9,14 +9,13 @@ const TOUR_STEPS = [
 
 export default function SystemTour() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const hasSeenTour = localStorage.getItem('hasSeenTour');
-    if (!hasSeenTour) {
-      setIsVisible(true);
+  const [isVisible, setIsVisible] = useState(() => {
+    try {
+      return !localStorage.getItem('hasSeenTour');
+    } catch {
+      return true;
     }
-  }, []);
+  });
 
   const handleNext = () => {
     if (currentStep < TOUR_STEPS.length - 1) {

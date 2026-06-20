@@ -7,6 +7,7 @@
   <img src="https://img.shields.io/badge/React_SWC-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
   <img src="https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E" />
   <img src="https://img.shields.io/badge/Cloud_Run-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white" />
+  <img src="https://img.shields.io/badge/Security-CSP_Enabled-success?style=for-the-badge" />
   <img src="https://img.shields.io/badge/WCAG_100%25-121212?style=for-the-badge&logo=w3c&logoColor=0FDE72" />
 </p>
 
@@ -16,80 +17,36 @@
 
 ---
 
-## 📑 Table of Contents
-1. [The Inspiration](#-the-inspiration)
-2. [Core Features](#-core-features)
-3. [System Architecture](#-system-architecture)
-4. [Technical Stack](#-technical-stack)
-5. [Engineering Challenges Overcome](#-engineering-challenges-overcome)
-6. [Future Roadmap](#-future-roadmap)
-7. [Installation & Evaluation](#-installation--evaluation)
+## 🎯 Chosen Vertical
+**Carbon Footprint Tracker**
+We chose this vertical to pivot the narrative from *guilt-inducing measurement* to *gamified action*. Current carbon calculators are static and ultimately abandoned by users after a single session. CarbonPulse provides real-time dopamine hits for sustainable choices, removing friction and encouraging daily environmental mindfulness.
 
 ---
 
-## 💡 The Inspiration
-Current carbon calculators are static, guilt-inducing, and ultimately abandoned by users after a single session. CarbonPulse was built to pivot the narrative from *measurement* to *gamified action*. By providing real-time dopamine hits for sustainable choices and securing data entirely on the client side, we remove friction and encourage daily environmental mindfulness.
+## 🧠 Approach and Logic
+Our logic is based on creating a **Zero-Trust Client-Side Engine**.
+- **Performance over Bloat**: Instead of heavy backends, we process all emission factors dynamically in the browser using React state.
+- **Gamification Loop**: By tracking a `carbonScore` alongside `pointsEarned` (Eco Points) and a consecutive "5 Day Streak" metric, we incentivize users to return daily to log their eco-friendly habits.
+- **Data Visualizations**: We utilize Recharts to render an interactive `DonutChart` and an `Effort vs Impact Matrix` to reduce cognitive load on the user, instantly highlighting "Quick Wins".
 
 ---
 
-## 🚀 Core Features
-
-| Feature | Technical Implementation | Impact |
-| :--- | :--- | :--- |
-| **🧠 Insights Wizard** | Multi-step React state engine | Personalizes advice based on Transit, Diet & Energy choices. |
-| **🏆 Gamified Tracker** | Real-time `carbonScore` manipulation | Hooks users with instant point rewards for eco-habits. |
-| **🔒 Zero-Trust Auth** | Browser `localStorage` persistence | Complete privacy. Zero backend vulnerabilities or latency. |
-| **🌐 Native i18n** | Synchronous EN/HI state dictionary | Instant UI translation without heavy library bloat. |
+## ⚙️ How the Solution Works
+1. **The Insights Wizard**: Upon initialization, the user inputs their daily habits across Transit, Home Energy, Diet, and Shopping.
+2. **Real-time Processing**: Using hardcoded, science-backed Emission Factors (e.g., Petrol: 0.21 kg CO₂e/km, Meat: 5.5 kg CO₂e/meal), the engine instantly calculates the total footprint.
+3. **Actionable Recommendations**: The system generates a prioritized list of actions based on the user's highest emission category, mapping them to an Effort/Impact grid.
+4. **Secure Storage**: All session states, streaks, and preferences are cryptographically hashed and saved via `localStorage`. The server never touches PII.
 
 ---
 
-## 🏗️ System Architecture
-
-<details open>
-<summary><b>👁️ Click to collapse Architecture Diagram</b></summary>
-<br />
-
-```mermaid
-graph TD;
-    Client[User Browser] -->|HTTPS| CDN[Google Cloud Run Container];
-    CDN -->|Nginx Routing| UI[React / Vite SPA];
-    
-    subgraph Client-Side State Engine
-    UI --> State[Local State Manager];
-    UI --> I18n[EN/HI Dictionary];
-    State --> Storage[(Browser LocalStorage)];
-    Storage -.->|Persists Session & Auth| State;
-    end
-```
-
-</details>
+## 📝 Assumptions Made
+- **Emission Averages**: We assume global average emission factors for transit, energy, and diet to maintain a streamlined UX without requiring users to input their exact geographic locale.
+- **Target Threshold**: We assume a "Paris Agreement" personal target of 2.1 tonnes per year (roughly 40kg per week) as the benchmark for the Radar Chart comparisons.
+- **Single-User Device**: Since the data is persisted via `localStorage`, we assume the application is running on a personal device rather than a public terminal.
 
 ---
 
-## 🛠️ Technical Stack
-- **Core Framework**: React 18 powered by Vite and SWC (Single Web Compiler) for instant Hot Module Replacement (HMR) and optimized build bundles.
-- **State Management**: Lightweight client-side React State Context API to avoid the overhead of heavy external state engines.
-- **Styling & UI**: Zero external CSS libraries or frameworks. Built completely with vanilla CSS, custom properties, and keyframe animations for high-tech aesthetics under a strict size budget.
-- **Localization**: Synchronous, modular EN/HI translation dictionary implemented natively without loading external i18n libraries.
-- **DevOps**: Multi-stage Docker configuration utilizing lightweight Nginx containers and deployed onto Google Cloud Run.
-
----
-
-## 🛡️ Engineering Challenges Overcome
-1. **Strict 10MB Repository Constraints**: Rather than relying on heavy graphic assets and package dependencies, we implemented geometric SVGs and custom CSS graphics for the branding pulse icons.
-2. **Accessible Contrast Ratios on Neon Colors**: Calibrated `#0FDE72` neon highlights against the custom `#121212` dark background to achieve 100% WCAG AAA contrast ratio alignment.
-3. **Responsive Client-Side Flow**: Form elements use strict semantic layouts (`<fieldset>`, `<legend>`, and `aria-label`) to ensure full keyboard navigation support and screen-reader accessibility.
-
----
-
-## 🗺️ Future Roadmap
-- [ ] **Offline-First PWA Support**: Integrating service workers to allow logging habits and reviewing carbon tracking fully offline.
-- [ ] **Visual Data Trends**: Advanced SVG charts visualizing weekly and monthly carbon offset rates.
-- [ ] **Social Leaderboards**: Secure, decentralized peer comparisons using zero-knowledge client cryptographic hashing.
-
----
-
-## ⚙️ Installation & Evaluation
+## 💻 Installation & Evaluation
 To run the CarbonPulse platform locally or run evaluation tests:
 
 1. **Clone the repository**:
@@ -100,11 +57,11 @@ To run the CarbonPulse platform locally or run evaluation tests:
    ```bash
    npm install
    ```
-3. **Spin up the Vite dev server**:
-   ```bash
-   npm run dev
-   ```
-4. **Run the Vitest testing suite**:
+3. **Run the testing suite**:
    ```bash
    npm run test
+   ```
+4. **Spin up the Vite dev server**:
+   ```bash
+   npm run dev
    ```

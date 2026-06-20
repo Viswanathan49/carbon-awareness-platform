@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { PieChart, Pie, Cell, BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
 
 // ─── EMISSION FACTORS (kg CO₂e) ─────────────────────────────────────────────
@@ -64,6 +64,47 @@ function buildRecs(transport, energy, food, goods) {
   return pool.sort((a, b) => b.saving - a.saving).slice(0, 4);
 }
 
+// ─── HELPER COMPONENTS ────────────────────────────────────────────────────────
+const RadioCard = ({ label, emoji, value, current, onChange, color }) => {
+  const isSelected = value === current;
+  return (
+    <button
+      type="button"
+      onClick={() => onChange(value)}
+      className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-300 ${
+        isSelected
+          ? `bg-[${color}]/10 border-[${color}] text-[${color}]`
+          : 'bg-white dark:bg-[#16161a] border-gray-100 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600'
+      }`}
+      style={isSelected ? { borderColor: color, color: color, backgroundColor: `${color}15` } : {}}
+    >
+      <span className="text-2xl mb-2" aria-hidden="true">{emoji}</span>
+      <span className={`text-sm font-bold ${isSelected ? '' : 'text-gray-900 dark:text-white'}`}>{label}</span>
+    </button>
+  );
+};
+
+const SliderInput = ({ id, label, value, min, max, onChange, unit, color }) => (
+  <div className="flex flex-col gap-3">
+    <div className="flex justify-between items-end">
+      <label htmlFor={id} className="text-sm font-semibold text-gray-700 dark:text-gray-300">{label}</label>
+      <span className="text-sm font-bold px-3 py-1 bg-white dark:bg-[#111] rounded-full border border-gray-100 dark:border-gray-800 shadow-sm" style={{ color }}>
+        {value} {unit}
+      </span>
+    </div>
+    <input 
+      id={id} 
+      type="range" 
+      min={min} 
+      max={max} 
+      value={value} 
+      onChange={(e) => onChange(Number(e.target.value))}
+      className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg cursor-pointer"
+      style={{ accentColor: color }}
+    />
+  </div>
+);
+
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 export default function CarbonAnalytics() {
   // Transport
@@ -101,46 +142,6 @@ export default function CarbonAnalytics() {
     localStorage.setItem('cf_goal', annualGoal);
   }, [annualGoal]);
 
-  // ─── HELPER COMPONENTS ──────────────────────────────────────────────────
-  const RadioCard = ({ label, emoji, value, current, onChange, color }) => {
-    const isSelected = value === current;
-    return (
-      <button
-        type="button"
-        onClick={() => onChange(value)}
-        className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-300 ${
-          isSelected
-            ? `bg-[${color}]/10 border-[${color}] text-[${color}]`
-            : 'bg-white dark:bg-[#16161a] border-gray-100 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600'
-        }`}
-        style={isSelected ? { borderColor: color, color: color, backgroundColor: `${color}15` } : {}}
-      >
-        <span className="text-2xl mb-2" aria-hidden="true">{emoji}</span>
-        <span className={`text-sm font-bold ${isSelected ? '' : 'text-gray-900 dark:text-white'}`}>{label}</span>
-      </button>
-    );
-  };
-
-  const SliderInput = ({ id, label, value, min, max, onChange, unit, color }) => (
-    <div className="flex flex-col gap-3">
-      <div className="flex justify-between items-end">
-        <label htmlFor={id} className="text-sm font-semibold text-gray-700 dark:text-gray-300">{label}</label>
-        <span className="text-sm font-bold px-3 py-1 bg-white dark:bg-[#111] rounded-full border border-gray-100 dark:border-gray-800 shadow-sm" style={{ color }}>
-          {value} {unit}
-        </span>
-      </div>
-      <input 
-        id={id} 
-        type="range" 
-        min={min} 
-        max={max} 
-        value={value} 
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg cursor-pointer"
-        style={{ accentColor: color }}
-      />
-    </div>
-  );
 
   // ─── CALCULATIONS ──────────────────────────────────────────────────────────
   const transport = useMemo(() => {
@@ -215,7 +216,6 @@ export default function CarbonAnalytics() {
   };
 
   // ─── SHARED INPUT STYLES ───────────────────────────────────────────────────
-  const inputCls = "w-full bg-white dark:bg-[#0e0e0e] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0FDE72] transition-colors";
   const labelCls = "block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1";
 
   return (
@@ -500,8 +500,8 @@ export default function CarbonAnalytics() {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
               {recs.map((rec, i) => {
-                let typeBadge = '';
-                let typeColor = '';
+                let typeBadge;
+                let typeColor;
                 if (rec.timeframe === 'Immediate') { typeBadge = '⚡ Quick Win'; typeColor = '#FACC15'; }
                 else if (rec.timeframe === 'Requires Planning') { typeBadge = '🎯 Strategic'; typeColor = '#00D1FF'; }
                 else { typeBadge = '🔄 Habit Builder'; typeColor = '#0FDE72'; }
