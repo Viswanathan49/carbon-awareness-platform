@@ -326,29 +326,7 @@ export default function CarbonAnalytics() {
               Calculate My Footprint
             </button>
           </div>
-        </form>utton
-              onClick={saveEntry}
-              className={`w-full py-3.5 rounded-2xl font-bold text-sm tracking-wide transition-all duration-300 border ${
-                saved
-                  ? 'bg-[#0FDE72]/10 text-[#0FDE72] border-[#0FDE72]/30'
-                  : 'bg-white dark:bg-[#16161a] text-gray-900 dark:text-white border-gray-200 dark:border-gray-700 hover:border-[#0FDE72] hover:text-[#0FDE72]'
-              }`}
-            >
-              {saved ? '✅ Saved to History' : '💾 Save this entry'}
-            </button>
-            <button
-              onClick={copyToClipboard}
-              className={`w-full py-3.5 rounded-2xl font-bold text-sm tracking-wide transition-all duration-300 border ${
-                copied
-                  ? 'bg-[#00D1FF]/10 text-[#00D1FF] border-[#00D1FF]/30'
-                  : 'bg-white dark:bg-[#16161a] text-gray-900 dark:text-white border-gray-200 dark:border-gray-700 hover:border-[#00D1FF] hover:text-[#00D1FF]'
-              }`}
-            >
-              {copied ? '✅ Copied to clipboard' : '📤 Share Results'}
-            </button>
-          </div>
-
-        </div>
+        </form>
 
         {/* ════════════════════════════════════════════════
             RIGHT COLUMN — RESULTS DASHBOARD
