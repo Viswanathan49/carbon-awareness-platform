@@ -1,5 +1,20 @@
 
 
+import PropTypes from 'prop-types';
+
+/**
+ * SliderInput component for selecting numerical values.
+ *
+ * @param {Object} props - Component props
+ * @param {string} props.id - HTML ID for the input element
+ * @param {string} props.label - Display label for the slider
+ * @param {number} props.value - Current value of the slider
+ * @param {string|number} props.min - Minimum allowed value
+ * @param {string|number} props.max - Maximum allowed value
+ * @param {function} props.onChange - Callback fired when value changes
+ * @param {string} props.unit - Unit to display next to the value (e.g. "km")
+ * @param {string} props.color - Hex color code for the slider accent
+ */
 export const SliderInput = ({ id, label, value, min, max, onChange, unit, color }) => (
   <div className="flex flex-col gap-3">
     <div className="flex justify-between items-end">
@@ -20,3 +35,14 @@ export const SliderInput = ({ id, label, value, min, max, onChange, unit, color 
     />
   </div>
 );
+
+SliderInput.propTypes = {
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired,
+  min: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  max: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  onChange: PropTypes.func.isRequired,
+  unit: PropTypes.string.isRequired,
+  color: PropTypes.string.isRequired,
+};

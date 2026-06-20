@@ -54,6 +54,12 @@ export function calculateEmissions({ carKm, fuelType, transitKm, shortFlights, l
 
 /**
  * Builds actionable recommendations based on emission categories.
+ * 
+ * @param {number} transport - Annual transport emissions in kg
+ * @param {number} energy - Annual home energy emissions in kg
+ * @param {number} food - Annual diet emissions in kg
+ * @param {number} goods - Annual goods emissions in kg
+ * @returns {Array<Object>} Sorted array of the top 4 recommendations
  */
 export function buildRecs(transport, energy, food, goods) {
   const pool = [
