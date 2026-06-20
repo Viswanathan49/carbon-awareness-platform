@@ -27,20 +27,18 @@ export default function CarbonAnalytics({ userTotal = 4.5 }) {
   const calculatePercentage = (user, baseline) => Math.min((user / baseline) * 100, 100).toFixed(0);
 
   return (
-    <section className="w-full max-w-5xl mx-auto my-16 px-4 relative z-10">
-      {/* THE MAIN CARD ENCLOSURE */}
-      <div className="bg-white dark:bg-[#111111] rounded-3xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 md:p-10 flex flex-col gap-8">
+    <section className="w-full max-w-5xl mx-auto mt-12 mb-24 px-4 relative z-10 clear-both block">
+      <div className="bg-white dark:bg-[#111111] rounded-3xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 md:p-10 flex flex-col gap-8 transition-colors duration-300">
         
         <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">Carbon Telemetry</h2>
         
-        {/* COMPARATIVE ANALYSIS PANEL */}
         <div className="p-6 bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/5 rounded-2xl">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
             <h3 className="text-gray-900 dark:text-white text-sm font-bold tracking-widest uppercase">Comparative Analysis</h3>
             <select 
               value={region} 
               onChange={(e) => setRegion(e.target.value)}
-              className="bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-[#0FDE72] border border-gray-300 dark:border-white/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0FDE72] font-medium transition-colors"
+              className="bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-[#0FDE72] border border-gray-300 dark:border-white/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0FDE72] font-medium"
             >
               <option value="Global">Global Average</option>
               <option value="US">United States</option>
@@ -57,7 +55,7 @@ export default function CarbonAnalytics({ userTotal = 4.5 }) {
               </div>
               <div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-3 overflow-hidden">
                 <div 
-                  className="bg-[#0FDE72] h-full rounded-full transition-all duration-1000 ease-out" 
+                  className="bg-[#0FDE72] h-full rounded-full" 
                   style={{ width: `${calculatePercentage(userTotal, baselines[region])}%` }}
                 ></div>
               </div>
@@ -70,7 +68,7 @@ export default function CarbonAnalytics({ userTotal = 4.5 }) {
               </div>
               <div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-3 overflow-hidden">
                 <div 
-                  className="bg-[#B026FF] h-full rounded-full transition-all duration-1000 ease-out" 
+                  className="bg-[#B026FF] h-full rounded-full" 
                   style={{ width: `${calculatePercentage(userTotal, baselines.ParisTarget)}%` }}
                 ></div>
               </div>
@@ -78,7 +76,6 @@ export default function CarbonAnalytics({ userTotal = 4.5 }) {
           </div>
         </div>
 
-        {/* CHARTS PANEL */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="h-80 w-full bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/5 rounded-2xl p-5 flex flex-col">
             <h3 className="text-[#0FDE72] text-xs font-bold tracking-widest mb-4 uppercase">Emission Source Breakdown</h3>
@@ -90,7 +87,7 @@ export default function CarbonAnalytics({ userTotal = 4.5 }) {
                       <Cell key={`cell-${index}`} fill={entry.color} stroke="transparent" />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: '#fff', border: 'none', borderRadius: '8px', color: '#000', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
+                  <Tooltip contentStyle={{ backgroundColor: '#fff', border: 'none', borderRadius: '8px', color: '#000' }} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -103,7 +100,7 @@ export default function CarbonAnalytics({ userTotal = 4.5 }) {
                 <LineChart data={historyData}>
                   <XAxis dataKey="month" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
                   <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
-                  <Tooltip contentStyle={{ backgroundColor: '#fff', border: 'none', borderRadius: '8px', color: '#000', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
+                  <Tooltip contentStyle={{ backgroundColor: '#fff', border: 'none', borderRadius: '8px', color: '#000' }} />
                   <Line type="monotone" dataKey="emissions" stroke="#00D1FF" strokeWidth={3} dot={{ fill: '#fff', stroke: '#00D1FF', strokeWidth: 2, r: 4 }} activeDot={{ r: 6 }} />
                 </LineChart>
               </ResponsiveContainer>
