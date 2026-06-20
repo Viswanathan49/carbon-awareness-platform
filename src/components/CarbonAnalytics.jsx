@@ -1,109 +1,9 @@
 import { useState, useMemo, useEffect } from 'react';
 import { PieChart, Pie, Cell, BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
 
-// ─── EMISSION FACTORS (kg CO₂e) ─────────────────────────────────────────────
-const FUEL_FACTORS    = { petrol: 0.21, diesel: 0.17, hybrid: 0.12, ev: 0.05 };
-const TRANSIT_FACTOR  = 0.089;   // kg CO₂e per km (bus/train average)
-const FLIGHT_SHORT    = 255;     // kg CO₂e per short-haul flight (with RFI)
-const FLIGHT_LONG     = 1000;    // kg CO₂e per long-haul flight  (with RFI)
-const GRID_FACTORS    = { coal: 0.82, mixed: 0.45, renewable: 0.05 };  // kg/kWh
-const DIET_ANNUAL     = { 'meat-heavy': 3285, balanced: 2555, vegetarian: 1700, vegan: 1460 };
-const GOODS_FACTOR    = 0.5;     // kg CO₂e per USD equivalent spend
-
-const PARIS_TARGET    = 2000;    // kg/year
-const GLOBAL_AVG      = 4500;
-const INDIA_AVG       = 1900;
-const EU_AVG          = 6800;
-
-const PIE_COLORS = ['#0FDE72', '#00D1FF', '#B026FF', '#FACC15'];
-
-// ─── RECOMMENDATION ENGINE ────────────────────────────────────────────────────
-function buildRecs(transport, energy, food, goods) {
-  const pool = [
-    {
-      category: 'Transport', color: '#0FDE72', icon: '🚗', timeframe: 'Ongoing',
-      action: 'Opt for public transport or cycling for 2 regular journeys per week.',
-      saving: Math.round(transport * 0.12)
-    },
-    {
-      category: 'Transport', color: '#0FDE72', icon: '🚗', timeframe: 'Achievable within 30 days',
-      action: 'Combine car errands and reduce non-essential trips by 10% annually.',
-      saving: Math.round(transport * 0.10)
-    },
-    {
-      category: 'Transport', color: '#0FDE72', icon: '🚗', timeframe: 'Immediate',
-      action: 'Work from home 2 days/week to eliminate commute emissions.',
-      saving: Math.round(transport * 0.25)
-    },
-    {
-      category: 'Home Energy', color: '#00D1FF', icon: '⚡', timeframe: 'Requires Planning',
-      action: 'Switch to a certified green energy provider or install solar panels.',
-      saving: Math.round(energy * 0.60)
-    },
-    {
-      category: 'Home Energy', color: '#00D1FF', icon: '⚡', timeframe: 'Achievable within 30 days',
-      action: 'Install LED lighting and a smart thermostat to cut idle consumption.',
-      saving: Math.round(energy * 0.15)
-    },
-    {
-      category: 'Diet', color: '#B026FF', icon: '🥩', timeframe: 'Ongoing',
-      action: 'Introduce one meat-free day per week, focusing on plant-based meals.',
-      saving: Math.round(food * 0.14)
-    },
-    {
-      category: 'Diet', color: '#B026FF', icon: '🥩', timeframe: 'Immediate',
-      action: 'Reduce food waste by meal-planning — 30% of food emissions come from waste.',
-      saving: Math.round(food * 0.09)
-    },
-    {
-      category: 'Shopping & Goods', color: '#FACC15', icon: '🛍️', timeframe: 'Ongoing',
-      action: 'Prioritize buying second-hand items or repairing existing ones for 10% of purchases.',
-      saving: Math.round(goods * 0.20)
-    },
-  ];
-  return pool.sort((a, b) => b.saving - a.saving).slice(0, 4);
-}
-
-// ─── HELPER COMPONENTS ────────────────────────────────────────────────────────
-const RadioCard = ({ label, emoji, value, current, onChange, color }) => {
-  const isSelected = value === current;
-  return (
-    <button
-      type="button"
-      onClick={() => onChange(value)}
-      className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-300 ${
-        isSelected
-          ? `bg-[${color}]/10 border-[${color}] text-[${color}]`
-          : 'bg-white dark:bg-[#16161a] border-gray-100 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600'
-      }`}
-      style={isSelected ? { borderColor: color, color: color, backgroundColor: `${color}15` } : {}}
-    >
-      <span className="text-2xl mb-2" aria-hidden="true">{emoji}</span>
-      <span className={`text-sm font-bold ${isSelected ? '' : 'text-gray-900 dark:text-white'}`}>{label}</span>
-    </button>
-  );
-};
-
-const SliderInput = ({ id, label, value, min, max, onChange, unit, color }) => (
-  <div className="flex flex-col gap-3">
-    <div className="flex justify-between items-end">
-      <label htmlFor={id} className="text-sm font-semibold text-gray-700 dark:text-gray-300">{label}</label>
-      <span className="text-sm font-bold px-3 py-1 bg-white dark:bg-[#111] rounded-full border border-gray-100 dark:border-gray-800 shadow-sm" style={{ color }}>
-        {value} {unit}
-      </span>
-    </div>
-    <input 
-      id={id} 
-      type="range" 
-      min={min} 
-      max={max} 
-      value={value} 
-      onChange={(e) => onChange(Number(e.target.value))}
-      className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg cursor-pointer"
-      style={{ accentColor: color }}
-    />
-  </div>
-);
+import { calculateEmissions, buildRecs, PARIS_TARGET, INDIA_AVG, GLOBAL_AVG, EU_AVG, PIE_COLORS } from '../utils/carbonCalculations';
+import { RadioCard } from './ui/RadioCard';
+import { SliderInput } from './ui/SliderInput';
 
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 export default function CarbonAnalytics() {
@@ -144,17 +44,9 @@ export default function CarbonAnalytics() {
 
 
   // ─── CALCULATIONS ──────────────────────────────────────────────────────────
-  const transport = useMemo(() => {
-    const car     = carKm * 52 * FUEL_FACTORS[fuelType];
-    const transit = transitKm * 52 * TRANSIT_FACTOR;
-    const flights = shortFlights * FLIGHT_SHORT + longFlights * FLIGHT_LONG;
-    return Math.round(car + transit + flights);
-  }, [carKm, fuelType, transitKm, shortFlights, longFlights]);
-
-  const energy = useMemo(() => Math.round(kwh * 12 * GRID_FACTORS[gridType]), [kwh, gridType]);
-  const food   = useMemo(() => DIET_ANNUAL[diet], [diet]);
-  const goods  = useMemo(() => Math.round(monthlySpend * 12 * GOODS_FACTOR), [monthlySpend]);
-  const total  = transport + energy + food + goods;
+  const { transport, energy, food, goods, total } = useMemo(() => 
+    calculateEmissions({ carKm, fuelType, transitKm, shortFlights, longFlights, kwh, gridType, diet, monthlySpend }), 
+  [carKm, fuelType, transitKm, shortFlights, longFlights, kwh, gridType, diet, monthlySpend]);
 
   const radarData = useMemo(() => [
     { subject: 'Transport', A: transport, B: PARIS_TARGET * 0.25 },
