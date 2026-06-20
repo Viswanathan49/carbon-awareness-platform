@@ -55,45 +55,47 @@ export function calculateEmissions({ carKm, fuelType, transitKm, shortFlights, l
  * Builds actionable recommendations based on emission categories.
  */
 export function buildRecs(transport, energy, food, goods) {
-  const recs = [];
-  
-  if (transport > 1000) {
-    recs.push({
-      id: 1, title: 'Carpool or Public Transit',
-      desc: 'Replacing 2 days of driving with transit saves ~400kg CO₂e/yr.',
-      effort: 'Medium', impact: 'High', type: 'Transport'
-    });
-  }
-  if (energy > 1500) {
-    recs.push({
-      id: 2, title: 'LED & Smart Thermostat',
-      desc: 'Upgrading your home lighting and AC control saves ~300kg CO₂e/yr.',
-      effort: 'Low', impact: 'Medium', type: 'Energy'
-    });
-  }
-  if (food >= 1500) {
-    recs.push({
-      id: 3, title: 'Meatless Mondays',
-      desc: 'Swapping meat for plant-based meals 1-2 days/week saves ~250kg CO₂e/yr.',
-      effort: 'Low', impact: 'High', type: 'Diet'
-    });
-  }
-  if (goods > 800) {
-    recs.push({
-      id: 4, title: 'Second-hand First',
-      desc: 'Buying refurbished electronics/clothes saves ~150kg CO₂e/yr.',
-      effort: 'Medium', impact: 'Low', type: 'Goods'
-    });
-  }
-  
-  // Fallback
-  if (recs.length === 0) {
-    recs.push({
-      id: 5, title: 'Offset Remaining Emissions',
-      desc: 'Look into verified Gold Standard carbon offsets for the rest.',
-      effort: 'Low', impact: 'Medium', type: 'General'
-    });
-  }
-  
-  return recs;
+  const pool = [
+    {
+      category: 'Transport', color: '#0FDE72', icon: '🚗', timeframe: 'Ongoing',
+      action: 'Opt for public transport or cycling for 2 regular journeys per week.',
+      saving: Math.round(transport * 0.12)
+    },
+    {
+      category: 'Transport', color: '#0FDE72', icon: '🚗', timeframe: 'Achievable within 30 days',
+      action: 'Combine car errands and reduce non-essential trips by 10% annually.',
+      saving: Math.round(transport * 0.10)
+    },
+    {
+      category: 'Transport', color: '#0FDE72', icon: '🚗', timeframe: 'Immediate',
+      action: 'Work from home 2 days/week to eliminate commute emissions.',
+      saving: Math.round(transport * 0.25)
+    },
+    {
+      category: 'Home Energy', color: '#00D1FF', icon: '⚡', timeframe: 'Requires Planning',
+      action: 'Switch to a certified green energy provider or install solar panels.',
+      saving: Math.round(energy * 0.60)
+    },
+    {
+      category: 'Home Energy', color: '#00D1FF', icon: '⚡', timeframe: 'Achievable within 30 days',
+      action: 'Install LED lighting and a smart thermostat to cut idle consumption.',
+      saving: Math.round(energy * 0.15)
+    },
+    {
+      category: 'Diet', color: '#B026FF', icon: '🥩', timeframe: 'Ongoing',
+      action: 'Introduce one meat-free day per week, focusing on plant-based meals.',
+      saving: Math.round(food * 0.14)
+    },
+    {
+      category: 'Diet', color: '#B026FF', icon: '🥩', timeframe: 'Immediate',
+      action: 'Reduce food waste by meal-planning — 30% of food emissions come from waste.',
+      saving: Math.round(food * 0.09)
+    },
+    {
+      category: 'Shopping & Goods', color: '#FACC15', icon: '🛍️', timeframe: 'Ongoing',
+      action: 'Prioritize buying second-hand items or repairing existing ones for 10% of purchases.',
+      saving: Math.round(goods * 0.20)
+    },
+  ];
+  return pool.sort((a, b) => b.saving - a.saving).slice(0, 4);
 }

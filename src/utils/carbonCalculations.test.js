@@ -50,13 +50,8 @@ describe('carbonCalculations utility', () => {
 
   it('generates targeted recommendations for high emitters', () => {
     const recs = buildRecs(2000, 2000, 2000, 2000);
-    expect(recs.length).toBeGreaterThan(0);
-    expect(recs[0].type).toBeDefined();
-  });
-
-  it('generates a fallback offset recommendation for low emitters', () => {
-    const recs = buildRecs(100, 100, 100, 100);
-    expect(recs.length).toBe(1);
-    expect(recs[0].title).toBe('Offset Remaining Emissions');
+    expect(recs.length).toBe(4);
+    expect(recs[0].category).toBeDefined();
+    expect(recs[0].saving).toBeGreaterThan(0);
   });
 });

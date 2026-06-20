@@ -1,14 +1,29 @@
-
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import App from './App';
 
-describe('App Component', () => {
-  it('renders the application correctly', () => {
+describe('App Component Integration', () => {
+  it('renders the app without crashing', () => {
     render(<App />);
-    // Verify the gamification header renders properly
-    expect(screen.getByText(/5 Day Streak/i)).toBeInTheDocument();
-    expect(screen.getByText(/Eco Warrior/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/CarbonPulse/i).length).toBeGreaterThan(0);
+  });
+
+  it('handles "Calculate My Footprint" click without throwing ErrorBoundary', async () => {
+    render(<App />);
+    
+    // Find the calculate button
+    const calcButton = screen.getByText(/Calculate My Footprint/i);
+    expect(calcButton).toBeInTheDocument();
+
+    // Fire form submission (simulating the click)
+    fireEvent.click(calcButton);
+
+    // Wait and ensure no ErrorBoundary text is displayed
+    await waitFor(() => {
+      expect(screen.queryByText(/System Diagnostics: Interface reboot required/i)).not.toBeInTheDocument();
+      // It should display the results section 
+      expect(screen.getByText(/Your Estimated Footprint/i)).toBeInTheDocument();
+    });
   });
 });
