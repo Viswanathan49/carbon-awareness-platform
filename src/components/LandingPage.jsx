@@ -6,23 +6,12 @@ export default function LandingPage({ onStart, onStartTracker }) {
   const t = translations[language]
 
   return (
-    <div className="flex flex-col relative overflow-hidden bg-gray-50 dark:bg-[#0a0a0a] text-gray-900 dark:text-white transition-colors duration-300">
+    <div className="flex flex-col relative overflow-hidden text-gray-900 dark:text-white transition-colors duration-300 bg-transparent">
       {/* Ambient background grid */}
       <div className="bg-tech-grid" style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }} />
 
       {/* ─── HERO SECTION ONLY ─── */}
-      <section
-        style={{
-          position: 'relative',
-          zIndex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '4rem 1.5rem 3rem',
-          textAlign: 'center',
-        }}
-      >
+      <section className="landing-hero" style={{ zIndex: 1, margin: '0 auto', width: '100%', maxWidth: '900px' }}>
         <h1
           className="text-gray-900 dark:text-white"
           style={{
