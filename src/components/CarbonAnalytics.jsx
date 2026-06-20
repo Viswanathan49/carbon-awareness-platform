@@ -21,55 +21,47 @@ const PIE_COLORS = ['#0FDE72', '#00D1FF', '#B026FF', '#FACC15'];
 function buildRecs(transport, energy, food, goods) {
   const pool = [
     {
-      category: 'Transport', color: '#0FDE72',
+      category: 'Transport', color: '#0FDE72', icon: '🚗', timeframe: 'Ongoing',
       action: 'Opt for public transport or cycling for 2 regular journeys per week.',
-      saving: Math.round(transport * 0.12),
-      timeframe: 'Ongoing'
+      saving: Math.round(transport * 0.12)
     },
     {
-      category: 'Transport', color: '#0FDE72',
+      category: 'Transport', color: '#0FDE72', icon: '🚗', timeframe: 'Achievable within 30 days',
       action: 'Combine car errands and reduce non-essential trips by 10% annually.',
-      saving: Math.round(transport * 0.10),
-      timeframe: 'Ongoing'
+      saving: Math.round(transport * 0.10)
     },
     {
-      category: 'Transport', color: '#0FDE72',
+      category: 'Transport', color: '#0FDE72', icon: '🚗', timeframe: 'Immediate',
       action: 'Work from home 2 days/week to eliminate commute emissions.',
-      saving: Math.round(transport * 0.25),
-      timeframe: 'Immediate'
+      saving: Math.round(transport * 0.25)
     },
     {
-      category: 'Home Energy', color: '#00D1FF',
+      category: 'Home Energy', color: '#00D1FF', icon: '⚡', timeframe: 'Requires Planning',
       action: 'Switch to a certified green energy provider or install solar panels.',
-      saving: Math.round(energy * 0.60),
-      timeframe: 'Achievable within 30 days'
+      saving: Math.round(energy * 0.60)
     },
     {
-      category: 'Home Energy', color: '#00D1FF',
+      category: 'Home Energy', color: '#00D1FF', icon: '⚡', timeframe: 'Achievable within 30 days',
       action: 'Install LED lighting and a smart thermostat to cut idle consumption.',
-      saving: Math.round(energy * 0.15),
-      timeframe: 'Achievable within 14 days'
+      saving: Math.round(energy * 0.15)
     },
     {
-      category: 'Diet', color: '#B026FF',
+      category: 'Diet', color: '#B026FF', icon: '🥩', timeframe: 'Ongoing',
       action: 'Introduce one meat-free day per week, focusing on plant-based meals.',
-      saving: Math.round(food * 0.14),
-      timeframe: 'Immediate'
+      saving: Math.round(food * 0.14)
     },
     {
-      category: 'Diet', color: '#B026FF',
+      category: 'Diet', color: '#B026FF', icon: '🥩', timeframe: 'Immediate',
       action: 'Reduce food waste by meal-planning — 30% of food emissions come from waste.',
-      saving: Math.round(food * 0.09),
-      timeframe: 'Ongoing'
+      saving: Math.round(food * 0.09)
     },
     {
-      category: 'Goods & Waste', color: '#FACC15',
+      category: 'Shopping & Goods', color: '#FACC15', icon: '🛍️', timeframe: 'Ongoing',
       action: 'Prioritize buying second-hand items or repairing existing ones for 10% of purchases.',
-      saving: Math.round(goods * 0.20),
-      timeframe: 'Ongoing'
+      saving: Math.round(goods * 0.20)
     },
   ];
-  return pool.sort((a, b) => b.saving - a.saving).slice(0, 3);
+  return pool.sort((a, b) => b.saving - a.saving).slice(0, 4);
 }
 
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
@@ -412,42 +404,40 @@ export default function CarbonAnalytics() {
 
           {/* ── RECOMMENDATIONS ── */}
           <div className="bg-white dark:bg-[#16161a] p-6 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col gap-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <h4 className="text-lg font-bold text-gray-900 dark:text-white">Action Plan</h4>
-                <span className="text-xs bg-[#0FDE72]/10 text-[#0FDE72] px-2 py-0.5 rounded-full font-bold border border-[#0FDE72]/20">AI-TAILORED</span>
-              </div>
+            <div className="flex items-center gap-2">
+              <h4 className="text-sm font-bold text-gray-900 dark:text-white">Personalized Insights</h4>
+              <span className="text-xs bg-[#0FDE72]/10 text-[#0FDE72] px-2 py-0.5 rounded-full font-bold border border-[#0FDE72]/20">AI-DRIVEN</span>
             </div>
-            
-            <div className="flex flex-col gap-4">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Your current footprint is {(total / 1000).toFixed(1)} tonnes. Here are your highest-impact actions.
+            </p>
+            <h5 className="text-sm font-bold text-gray-900 dark:text-white mt-1">Recommended actions</h5>
+            <div className="flex flex-col gap-4 mt-2">
               {recs.map((rec, i) => (
-                <div key={i} className="flex items-start gap-4 p-5 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-[#111] shadow-sm hover:shadow-md transition-shadow">
-                  
+                <div key={i} className="flex gap-4 p-5 rounded-2xl bg-white dark:bg-[#16161a] border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden transition-all hover:shadow-md">
                   {/* Number Badge */}
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-sm" style={{ backgroundColor: rec.color }}>
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white z-10" style={{ backgroundColor: rec.color }}>
                     {i + 1}
                   </div>
                   
-                  <div className="flex-1">
-                    <h5 className="text-xs font-bold tracking-wider uppercase mb-1" style={{ color: rec.color }}>
-                      {rec.category === 'Diet' ? '🍏 FOOD & DIET' : rec.category === 'Transport' ? '🚗 MOBILITY' : rec.category === 'Home Energy' ? '⚡ ENERGY' : '🛍️ GOODS'}
-                    </h5>
-                    
-                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200 mb-4 leading-relaxed">
+                  <div className="flex-grow z-10">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-lg" aria-hidden="true">{rec.icon}</span>
+                      <h6 className="text-xs font-bold uppercase tracking-wider" style={{ color: rec.color }}>{rec.category}</h6>
+                    </div>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
                       {rec.action}
                     </p>
                     
-                    {/* Badges Row */}
-                    <div className="flex flex-wrap items-center gap-2">
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#0FDE72]/10 text-[#0FDE72] border border-[#0FDE72]/20">
-                        <span>💚</span> Save ~{rec.saving.toLocaleString()} kg CO₂e/year
+                    <div className="flex flex-wrap items-center gap-3">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white dark:bg-[#111]" style={{ color: rec.color, border: `1px solid ${rec.color}30` }}>
+                        <span aria-hidden="true">💚</span> Save ~{rec.saving.toLocaleString()} kg CO₂e/year
                       </div>
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                        <span>⏱️</span> {rec.timeframe}
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-[#111]">
+                        <span aria-hidden="true">⏱️</span> {rec.timeframe}
                       </div>
                     </div>
                   </div>
-
                 </div>
               ))}
             </div>
@@ -507,22 +497,25 @@ export default function CarbonAnalytics() {
       {/* ════════════════════════════════════════════════
           DATA SOURCES & ABOUT FOOTER
       ════════════════════════════════════════════════ */}
-      <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
+      <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 grid grid-cols-1 md:grid-cols-2 gap-8 text-xs text-gray-500 dark:text-gray-400">
         <div>
-          <h4 className="font-bold text-gray-900 dark:text-white mb-4">Data Sources</h4>
-          <ul className="text-gray-500 dark:text-gray-400 space-y-2">
-            <li><span className="text-gray-700 dark:text-gray-300 font-medium">UK DEFRA 2023</span> — Transport & Home Energy factors</li>
-            <li><span className="text-gray-700 dark:text-gray-300 font-medium">US EPA 2023</span> — Electricity grid emissions</li>
-            <li><span className="text-gray-700 dark:text-gray-300 font-medium">ICAO Carbon Calculator</span> — Aviation emissions</li>
-            <li><span className="text-gray-700 dark:text-gray-300 font-medium">Our World in Data 2023</span> — Diet emissions & global average</li>
-            <li><span className="text-gray-700 dark:text-gray-300 font-medium">IPCC AR6 / SR1.5</span> — Consumption & Paris target</li>
+          <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-4">Data Sources</h4>
+          <ul className="flex flex-col gap-2">
+            <li><span className="font-semibold text-gray-700 dark:text-gray-300">UK DEFRA 2023</span> — Transport & Home Energy factors</li>
+            <li><span className="font-semibold text-gray-700 dark:text-gray-300">US EPA 2023</span> — Electricity grid emissions</li>
+            <li><span className="font-semibold text-gray-700 dark:text-gray-300">ICAO Carbon Calculator</span> — Aviation emissions</li>
+            <li><span className="font-semibold text-gray-700 dark:text-gray-300">Our World in Data 2023</span> — Diet emissions & global average</li>
+            <li><span className="font-semibold text-gray-700 dark:text-gray-300">IPCC AR6 / SR1.5</span> — Consumption & Paris target</li>
           </ul>
         </div>
         <div>
-          <h4 className="font-bold text-gray-900 dark:text-white mb-4">About</h4>
-          <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
-            This tool provides estimates for educational purposes based on peer-reviewed emission factors. Individual results may vary based on local grid mix, vehicle efficiency, and personal circumstances. Your data is processed entirely on your device (client-side execution) ensuring 100% privacy with zero database storage.
+          <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-4">About</h4>
+          <p className="leading-relaxed mb-4">
+            This tool provides estimates for educational purposes based on peer-reviewed emission factors. Individual results may vary based on local grid mix, vehicle efficiency, and personal circumstances.
           </p>
+          <div className="pt-6 border-t border-gray-200 dark:border-gray-800">
+            <p>© {new Date().getFullYear()} Carbon Footprint Awareness Platform — Powered by React & Tailwind</p>
+          </div>
         </div>
       </div>
 
