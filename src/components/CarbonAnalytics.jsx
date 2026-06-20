@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { PieChart, Pie, Cell, BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 // ─── EMISSION FACTORS (kg CO₂e) ─────────────────────────────────────────────
 const FUEL_FACTORS    = { petrol: 0.21, diesel: 0.17, hybrid: 0.12, ev: 0.05 };
@@ -90,6 +90,34 @@ export default function CarbonAnalytics() {
   });
   const [saved, setSaved]         = useState(false);
   const [copied, setCopied]       = useState(false);
+  const [annualGoal, setAnnualGoal] = useState(() => {
+    try { return Number(localStorage.getItem('cf_goal')) || 2500; }
+    catch { return 2500; }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('cf_goal', annualGoal);
+  }, [annualGoal]);
+
+  // ─── HELPER COMPONENTS ──────────────────────────────────────────────────
+  const RadioCard = ({ label, emoji, value, current, onChange, color }) => {
+    const isSelected = value === current;
+    return (
+      <button
+        type="button"
+        onClick={() => onChange(value)}
+        className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-300 ${
+          isSelected
+            ? `bg-[${color}]/10 border-[${color}] text-[${color}]`
+            : 'bg-white dark:bg-[#16161a] border-gray-100 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600'
+        }`}
+        style={isSelected ? { borderColor: color, color: color, backgroundColor: `${color}15` } : {}}
+      >
+        <span className="text-2xl mb-2" aria-hidden="true">{emoji}</span>
+        <span className={`text-sm font-bold ${isSelected ? '' : 'text-gray-900 dark:text-white'}`}>{label}</span>
+      </button>
+    );
+  };
 
   // ─── CALCULATIONS ──────────────────────────────────────────────────────────
   const transport = useMemo(() => {
@@ -201,14 +229,14 @@ export default function CarbonAnalytics() {
                   onChange={e => setCarKm(Number(e.target.value))}
                   className={inputCls} />
               </div>
-              <div>
-                <label htmlFor="fuelType" className={labelCls}>Car fuel type</label>
-                <select id="fuelType" aria-label="Car fuel type" value={fuelType} onChange={e => setFuelType(e.target.value)} className={inputCls}>
-                  <option value="petrol">Petrol</option>
-                  <option value="diesel">Diesel</option>
-                  <option value="hybrid">Hybrid</option>
-                  <option value="ev">Electric (EV)</option>
-                </select>
+              <div className="sm:col-span-2">
+                <label className={labelCls}>Car fuel type</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-1">
+                  <RadioCard label="Petrol" emoji="⛽" value="petrol" current={fuelType} onChange={setFuelType} color="#0FDE72" />
+                  <RadioCard label="Diesel" emoji="🛢️" value="diesel" current={fuelType} onChange={setFuelType} color="#0FDE72" />
+                  <RadioCard label="Hybrid" emoji="🔋" value="hybrid" current={fuelType} onChange={setFuelType} color="#0FDE72" />
+                  <RadioCard label="Electric" emoji="⚡" value="ev" current={fuelType} onChange={setFuelType} color="#0FDE72" />
+                </div>
               </div>
               <div>
                 <label htmlFor="transitKm" className={labelCls}>Public transit per week (km)</label>
@@ -244,13 +272,13 @@ export default function CarbonAnalytics() {
                   onChange={e => setKwh(Number(e.target.value))}
                   className={inputCls} />
               </div>
-              <div>
-                <label htmlFor="gridType" className={labelCls}>Grid / energy source</label>
-                <select id="gridType" aria-label="Grid energy source type" value={gridType} onChange={e => setGridType(e.target.value)} className={inputCls}>
-                  <option value="coal">Coal / Gas Grid</option>
-                  <option value="mixed">Mixed Grid (some renewables)</option>
-                  <option value="renewable">100% Green / Solar</option>
-                </select>
+              <div className="sm:col-span-2">
+                <label className={labelCls}>Grid / energy source</label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-1">
+                  <RadioCard label="Coal / Gas Grid" emoji="🏭" value="coal" current={gridType} onChange={setGridType} color="#00D1FF" />
+                  <RadioCard label="Mixed Grid" emoji="🔌" value="mixed" current={gridType} onChange={setGridType} color="#00D1FF" />
+                  <RadioCard label="100% Green / Solar" emoji="☀️" value="renewable" current={gridType} onChange={setGridType} color="#00D1FF" />
+                </div>
               </div>
             </div>
           </div>
@@ -262,13 +290,13 @@ export default function CarbonAnalytics() {
               <h3 className="font-bold text-gray-900 dark:text-white">Diet</h3>
             </div>
             <div className="p-6">
-              <label htmlFor="diet" className={labelCls}>Typical diet profile</label>
-              <select id="diet" aria-label="Typical diet profile" value={diet} onChange={e => setDiet(e.target.value)} className={inputCls}>
-                <option value="meat-heavy">Meat-heavy</option>
-                <option value="balanced">Balanced / Flexitarian</option>
-                <option value="vegetarian">Vegetarian</option>
-                <option value="vegan">Vegan (Plant-Based)</option>
-              </select>
+              <label className={labelCls}>Typical diet profile</label>
+              <div className="grid grid-cols-2 gap-3 mt-1">
+                <RadioCard label="Meat-heavy" emoji="🥩" value="meat-heavy" current={diet} onChange={setDiet} color="#B026FF" />
+                <RadioCard label="Balanced" emoji="🍗" value="balanced" current={diet} onChange={setDiet} color="#B026FF" />
+                <RadioCard label="Vegetarian" emoji="🥚" value="vegetarian" current={diet} onChange={setDiet} color="#B026FF" />
+                <RadioCard label="Vegan" emoji="🌱" value="vegan" current={diet} onChange={setDiet} color="#B026FF" />
+              </div>
             </div>
           </div>
 
@@ -449,46 +477,94 @@ export default function CarbonAnalytics() {
       {/* ════════════════════════════════════════════════
           HISTORY SECTION
       ════════════════════════════════════════════════ */}
+      {/* ════════════════════════════════════════════════
+          HISTORY & GOAL TRACKING SECTION
+      ════════════════════════════════════════════════ */}
       <div className="mt-10 bg-white dark:bg-[#16161a] rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
-          <h3 className="font-bold text-gray-900 dark:text-white">Your History</h3>
-          {history.length > 0 && (
-            <button onClick={clearHistory} className="text-xs text-red-400 hover:text-red-500 font-medium transition-colors">
-              Clear all
-            </button>
-          )}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-[#111111]/50">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl" aria-hidden="true">📈</span>
+            <h3 className="font-bold text-gray-900 dark:text-white">Goal Tracking & Progress</h3>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <label htmlFor="annualGoal" className="text-sm font-semibold text-gray-600 dark:text-gray-400">Target (kg):</label>
+              <input 
+                id="annualGoal"
+                type="number"
+                value={annualGoal}
+                onChange={(e) => setAnnualGoal(Number(e.target.value))}
+                className="w-24 bg-white dark:bg-[#0e0e0e] border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-[#0FDE72]"
+              />
+            </div>
+            {history.length > 0 && (
+              <button onClick={clearHistory} className="text-xs text-red-400 hover:text-red-500 font-medium transition-colors ml-4 border border-red-400/20 px-2 py-1 rounded">
+                Clear all
+              </button>
+            )}
+          </div>
         </div>
+
         <div className="p-6">
           {history.length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-4">
-              No saved entries yet. Calculate and save a footprint to start tracking your progress.
-            </p>
+            <div className="text-center py-10 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl">
+              <span className="text-4xl mb-3 block opacity-50">🎯</span>
+              <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                No saved entries yet. Calculate and hit "Save this entry" to start tracking your progress towards your goal!
+              </p>
+            </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
-                    <th className="text-left py-2 pr-4">Date</th>
-                    <th className="text-right py-2 pr-4">Total</th>
-                    <th className="text-right py-2 pr-4">Transport</th>
-                    <th className="text-right py-2 pr-4">Energy</th>
-                    <th className="text-right py-2 pr-4">Diet</th>
-                    <th className="text-right py-2">Goods</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {history.map((h, i) => (
-                    <tr key={i} className="border-b border-gray-50 dark:border-gray-800/50 last:border-0">
-                      <td className="py-3 pr-4 text-gray-600 dark:text-gray-400 font-medium">{h.date}</td>
-                      <td className="py-3 pr-4 text-right font-bold text-gray-900 dark:text-white">{(h.total / 1000).toFixed(2)} t</td>
-                      <td className="py-3 pr-4 text-right text-[#0FDE72] font-mono">{h.transport.toLocaleString()}</td>
-                      <td className="py-3 pr-4 text-right text-[#00D1FF] font-mono">{h.energy.toLocaleString()}</td>
-                      <td className="py-3 pr-4 text-right text-[#B026FF] font-mono">{h.food.toLocaleString()}</td>
-                      <td className="py-3 text-right text-[#FACC15] font-mono">{h.goods.toLocaleString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              
+              {/* Trendline Chart */}
+              <div className="flex flex-col gap-2">
+                <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-2">Trendline vs Target</h4>
+                <div style={{ width: '100%', height: 250 }}>
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+                    <LineChart data={[...history].reverse()} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                      <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#8c96a5' }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fontSize: 10, fill: '#8c96a5' }} axisLine={false} tickLine={false} />
+                      <Tooltip
+                        contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px', color: '#fff', fontSize: '12px' }}
+                        formatter={(v) => [`${v.toLocaleString()} kg`, 'Recorded Total']}
+                      />
+                      <ReferenceLine y={annualGoal} stroke="#38bdf8" strokeDasharray="3 3" label={{ position: 'insideTopLeft', value: 'Target', fill: '#38bdf8', fontSize: 12 }} />
+                      <Line type="monotone" dataKey="total" stroke="#0FDE72" strokeWidth={3} dot={{ fill: '#0FDE72', strokeWidth: 2, r: 4 }} activeDot={{ r: 6 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* History Table */}
+              <div>
+                <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-4">Saved Entries</h4>
+                <div className="overflow-x-auto max-h-[250px] overflow-y-auto">
+                  <table className="w-full text-sm">
+                    <thead className="sticky top-0 bg-white dark:bg-[#16161a] z-10">
+                      <tr className="text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
+                        <th className="text-left py-2 pr-4">Date</th>
+                        <th className="text-right py-2 pr-4">Total</th>
+                        <th className="text-right py-2 pr-4">Delta vs Goal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {history.map((h, i) => {
+                        const delta = h.total - annualGoal;
+                        const isOver = delta > 0;
+                        return (
+                          <tr key={i} className="border-b border-gray-50 dark:border-gray-800/50 last:border-0">
+                            <td className="py-3 pr-4 text-gray-600 dark:text-gray-400 font-medium">{h.date}</td>
+                            <td className="py-3 pr-4 text-right font-bold text-gray-900 dark:text-white">{(h.total / 1000).toFixed(2)} t</td>
+                            <td className={`py-3 pr-4 text-right font-bold ${isOver ? 'text-red-400' : 'text-[#0FDE72]'}`}>
+                              {isOver ? '+' : ''}{(delta / 1000).toFixed(2)} t
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           )}
         </div>
