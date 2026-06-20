@@ -6,7 +6,8 @@
 export const FUEL_FACTORS = {
   petrol: 0.21,
   diesel: 0.17,
-  electric: 0.05,
+  hybrid: 0.12,
+  ev: 0.05,
 };
 
 export const GRID_FACTORS = {

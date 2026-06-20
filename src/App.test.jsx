@@ -12,6 +12,10 @@ describe('App Component Integration', () => {
   it('handles "Calculate My Footprint" click without throwing ErrorBoundary', async () => {
     render(<App />);
     
+    // Select hybrid fuel to ensure FUEL_FACTORS doesn't result in NaN
+    const hybridRadio = screen.getByText(/Hybrid/i);
+    fireEvent.click(hybridRadio);
+
     // Find the calculate button
     const calcButton = screen.getByText(/Calculate My Footprint/i);
     expect(calcButton).toBeInTheDocument();

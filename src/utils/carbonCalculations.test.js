@@ -37,7 +37,8 @@ describe('carbonCalculations utility', () => {
 
   it('calculates properly for a zero-emission lifestyle', () => {
     const inputs = {
-      carKm: 0, fuelType: 'electric', transitKm: 0, shortFlights: 0, longFlights: 0,
+      carKm: 0,
+      fuelType: 'ev', transitKm: 0, shortFlights: 0, longFlights: 0,
       kwh: 0, gridType: 'renewable', diet: 'vegan', monthlySpend: 0
     };
     const result = calculateEmissions(inputs);
