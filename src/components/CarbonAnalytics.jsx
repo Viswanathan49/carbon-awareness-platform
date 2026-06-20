@@ -26,7 +26,10 @@ export default function CarbonAnalytics() {
 
   // History & Sharing
   const [history, setHistory]     = useState(() => {
-    try { return JSON.parse(localStorage.getItem('cf_history') || '[]'); }
+    try { 
+      const parsed = JSON.parse(localStorage.getItem('cf_history') || '[]'); 
+      return Array.isArray(parsed) ? parsed.filter(item => item && typeof item.total === 'number' && !isNaN(item.total)) : [];
+    }
     catch { return []; }
   });
   const [saved, setSaved]         = useState(false);
@@ -311,7 +314,7 @@ export default function CarbonAnalytics() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* ── RADAR CHART ── */}
               <div style={{ width: '100%', height: 220, position: 'relative' }}>
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                   <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
                     <PolarGrid stroke="rgba(100,116,139,0.2)" />
                     <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 10 }} />
@@ -327,7 +330,7 @@ export default function CarbonAnalytics() {
 
               {/* ── ANIMATED DONUT CHART ── */}
               <div style={{ width: '100%', height: 220, position: 'relative' }}>
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                   <PieChart>
                     <Pie 
                       data={pieData} 
@@ -374,7 +377,7 @@ export default function CarbonAnalytics() {
                 <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2.5 overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-700 ease-out"
-                    style={{ width: `${Math.min((item.value / total) * 100, 100)}%`, backgroundColor: item.color }}
+                    style={{ width: `${total > 0 ? Math.min((item.value / total) * 100, 100) : 0}%`, backgroundColor: item.color }}
                   />
                 </div>
               </div>
