@@ -6,6 +6,7 @@ import LandingPage from './components/LandingPage'
 import DailyTracker from './components/gamification/DailyTracker'
 import SystemTour from './components/SystemTour'
 import CarbonAnalytics from './components/CarbonAnalytics'
+import CommandModules from './components/CommandModules'
 import logoSvg from './assets/logo.svg?raw'
 import './App.css'
 
@@ -177,6 +178,7 @@ function App() {
 
         {view === 'landing' && (
           <>
+            <CommandModules />
             <div className="h-[200px] w-full shrink-0 clear-both"></div>
             <CarbonAnalytics userTotal={carbonScore > 0 ? carbonScore / 1000 : 4.5} />
           </>
