@@ -82,16 +82,14 @@ function App() {
             {theme === 'dark' ? '☀️' : '🌙'}
           </button>
           
-          <div className={`score-badge ${isPulsing ? 'pulse-animation' : ''}`} aria-live="polite">
-            <svg className="score-badge-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 2L2 22h20L12 2zm0 5l7.5 13H4.5L12 7z"/>
-            </svg>
-            <span>{t.scoreLabel}: {carbonScore.toFixed(1)} kg CO₂e</span>
+          <div className="score-badge" style={{ borderColor: 'rgba(250, 204, 21, 0.3)', color: '#eab308', background: 'rgba(250, 204, 21, 0.05)' }} aria-live="polite" title="Consecutive active days">
+            <span aria-hidden="true" className="animate-pulse">🔥</span>
+            <span className="font-bold">5 Day Streak</span>
           </div>
 
-          <div className={`score-badge ${isPulsing ? 'pulse-animation' : ''}`} style={{ borderColor: 'rgba(var(--accent-secondary-rgb), 0.2)', color: 'var(--accent-secondary)', background: 'rgba(var(--accent-secondary-rgb), 0.08)' }} aria-live="polite">
-            <span aria-hidden="true">🏆</span>
-            <span>{t.pointsLabel}: {pointsEarned} pts</span>
+          <div className="score-badge" style={{ borderColor: 'rgba(15, 222, 114, 0.3)', color: '#0bc060', background: 'rgba(15, 222, 114, 0.05)' }} aria-live="polite" title="Your current Eco Level">
+            <span aria-hidden="true">⭐</span>
+            <span className="font-bold">Lvl 3: Eco Warrior</span>
           </div>
         </div>
       </nav>
