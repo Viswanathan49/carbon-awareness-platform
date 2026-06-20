@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { PieChart, Pie, Cell, BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { PieChart, Pie, Cell, BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
 
 // ─── EMISSION FACTORS (kg CO₂e) ─────────────────────────────────────────────
 const FUEL_FACTORS    = { petrol: 0.21, diesel: 0.17, hybrid: 0.12, ev: 0.05 };
@@ -91,6 +91,7 @@ export default function CarbonAnalytics() {
   const [saved, setSaved]         = useState(false);
   const [copied, setCopied]       = useState(false);
   const [hasCalculated, setHasCalculated] = useState(false);
+  const [activeIndex, setActiveIndex]     = useState(0);
   const [annualGoal, setAnnualGoal] = useState(() => {
     try { return Number(localStorage.getItem('cf_goal')) || 2500; }
     catch { return 2500; }
@@ -120,6 +121,27 @@ export default function CarbonAnalytics() {
     );
   };
 
+  const SliderInput = ({ id, label, value, min, max, onChange, unit, color }) => (
+    <div className="flex flex-col gap-3">
+      <div className="flex justify-between items-end">
+        <label htmlFor={id} className="text-sm font-semibold text-gray-700 dark:text-gray-300">{label}</label>
+        <span className="text-sm font-bold px-3 py-1 bg-white dark:bg-[#111] rounded-full border border-gray-100 dark:border-gray-800 shadow-sm" style={{ color }}>
+          {value} {unit}
+        </span>
+      </div>
+      <input 
+        id={id} 
+        type="range" 
+        min={min} 
+        max={max} 
+        value={value} 
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg cursor-pointer"
+        style={{ accentColor: color }}
+      />
+    </div>
+  );
+
   // ─── CALCULATIONS ──────────────────────────────────────────────────────────
   const transport = useMemo(() => {
     const car     = carKm * 52 * FUEL_FACTORS[fuelType];
@@ -132,6 +154,13 @@ export default function CarbonAnalytics() {
   const food   = useMemo(() => DIET_ANNUAL[diet], [diet]);
   const goods  = useMemo(() => Math.round(monthlySpend * 12 * GOODS_FACTOR), [monthlySpend]);
   const total  = transport + energy + food + goods;
+
+  const radarData = useMemo(() => [
+    { subject: 'Transport', A: transport, B: PARIS_TARGET * 0.25 },
+    { subject: 'Energy', A: energy, B: PARIS_TARGET * 0.25 },
+    { subject: 'Diet', A: food, B: PARIS_TARGET * 0.25 },
+    { subject: 'Goods', A: goods, B: PARIS_TARGET * 0.25 },
+  ], [transport, energy, food, goods]);
 
   const pieData = [
     { name: 'Transport',   value: transport, color: PIE_COLORS[0] },
@@ -232,10 +261,7 @@ export default function CarbonAnalytics() {
             </div>
             <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label htmlFor="carKm" className={labelCls}>Car distance per week (km)</label>
-                <input id="carKm" aria-label="Car distance per week in kilometers" type="number" min="0" max="3000" value={carKm}
-                  onChange={e => setCarKm(Number(e.target.value))}
-                  className={inputCls} />
+                <SliderInput id="carKm" label="Car distance per week" value={carKm} min="0" max="3000" onChange={setCarKm} unit="km" color="#0FDE72" />
               </div>
               <div className="sm:col-span-2">
                 <label className={labelCls}>Car fuel type</label>
@@ -247,22 +273,13 @@ export default function CarbonAnalytics() {
                 </div>
               </div>
               <div>
-                <label htmlFor="transitKm" className={labelCls}>Public transit per week (km)</label>
-                <input id="transitKm" aria-label="Public transit per week in kilometers" type="number" min="0" max="1000" value={transitKm}
-                  onChange={e => setTransitKm(Number(e.target.value))}
-                  className={inputCls} />
+                <SliderInput id="transitKm" label="Public transit per week" value={transitKm} min="0" max="1000" onChange={setTransitKm} unit="km" color="#0FDE72" />
               </div>
               <div>
-                <label htmlFor="shortFlights" className={labelCls}>Short-haul flights per year</label>
-                <input id="shortFlights" aria-label="Number of short-haul flights per year" type="number" min="0" max="50" value={shortFlights}
-                  onChange={e => setShort(Number(e.target.value))}
-                  className={inputCls} />
+                <SliderInput id="shortFlights" label="Short-haul flights per year" value={shortFlights} min="0" max="50" onChange={setShort} unit="flights" color="#0FDE72" />
               </div>
               <div>
-                <label htmlFor="longFlights" className={labelCls}>Long-haul flights per year</label>
-                <input id="longFlights" aria-label="Number of long-haul flights per year" type="number" min="0" max="20" value={longFlights}
-                  onChange={e => setLong(Number(e.target.value))}
-                  className={inputCls} />
+                <SliderInput id="longFlights" label="Long-haul flights per year" value={longFlights} min="0" max="20" onChange={setLong} unit="flights" color="#0FDE72" />
               </div>
             </div>
           </div>
@@ -275,10 +292,7 @@ export default function CarbonAnalytics() {
             </div>
             <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label htmlFor="kwh" className={labelCls}>Monthly electricity (kWh)</label>
-                <input id="kwh" aria-label="Monthly electricity usage in kilowatt hours" type="number" min="0" max="3000" value={kwh}
-                  onChange={e => setKwh(Number(e.target.value))}
-                  className={inputCls} />
+                <SliderInput id="kwh" label="Monthly electricity" value={kwh} min="0" max="3000" onChange={setKwh} unit="kWh" color="#00D1FF" />
               </div>
               <div className="sm:col-span-2">
                 <label className={labelCls}>Grid / energy source</label>
@@ -308,11 +322,8 @@ export default function CarbonAnalytics() {
                 </div>
               </div>
               <div className="pt-6 border-t border-gray-100 dark:border-gray-800">
-                <label htmlFor="monthlySpend" className={labelCls}>Monthly non-essential spend (USD equivalent)</label>
-                <input id="monthlySpend" aria-label="Monthly non-essential spend in USD equivalent" type="number" min="0" max="5000" value={monthlySpend}
-                  onChange={e => setSpend(Number(e.target.value))}
-                  className={inputCls} />
-                <p className="text-xs text-gray-400 mt-1">Clothing, electronics, dining out, subscriptions.</p>
+                <SliderInput id="monthlySpend" label="Monthly non-essential spend" value={monthlySpend} min="0" max="5000" onChange={setSpend} unit="USD" color="#FACC15" />
+                <p className="text-xs text-gray-400 mt-2">Clothing, electronics, dining out, subscriptions.</p>
               </div>
             </div>
           </div>
@@ -401,26 +412,65 @@ export default function CarbonAnalytics() {
             </div>
           </div>
 
-          {/* ── BREAKDOWN BARS ── */}
+          {/* ── BREAKDOWN & RADAR ── */}
           <div className="bg-white dark:bg-[#16161a] p-6 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col gap-4">
-            <h4 className="text-sm font-bold text-gray-900 dark:text-white">Breakdown by category</h4>
+            <h4 className="text-sm font-bold text-gray-900 dark:text-white">Emissions Profile & Targets</h4>
             
-            {/* ── PIE CHART ── */}
-            <div style={{ width: '100%', height: 180, position: 'relative', marginBottom: '10px' }}>
-              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-                <PieChart>
-                  <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={45} outerRadius={75} paddingAngle={4}>
-                    {pieData.map((entry, i) => (
-                      <Cell key={i} fill={entry.color} stroke="transparent" />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{ backgroundColor: 'rgba(17, 17, 17, 0.75)', backdropFilter: 'blur(8px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff', fontSize: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}
-                    itemStyle={{ color: '#fff' }}
-                    formatter={(v) => [`${v.toLocaleString()} kg`, '']}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* ── RADAR CHART ── */}
+              <div style={{ width: '100%', height: 220, position: 'relative' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
+                    <PolarGrid stroke="rgba(100,116,139,0.2)" />
+                    <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 10 }} />
+                    <PolarRadiusAxis angle={30} domain={[0, 'auto']} tick={false} axisLine={false} />
+                    <Radar name="You" dataKey="A" stroke="#0FDE72" fill="#0FDE72" fillOpacity={0.4} />
+                    <Radar name="Paris Target" dataKey="B" stroke="#38bdf8" fill="#38bdf8" fillOpacity={0.2} />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: 'rgba(17, 17, 17, 0.75)', backdropFilter: 'blur(8px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff', fontSize: '12px' }}
+                    />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* ── ANIMATED DONUT CHART ── */}
+              <div style={{ width: '100%', height: 220, position: 'relative' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie 
+                      data={pieData} 
+                      dataKey="value" 
+                      nameKey="name" 
+                      cx="50%" 
+                      cy="50%" 
+                      innerRadius={55} 
+                      outerRadius={80} 
+                      paddingAngle={4}
+                      activeIndex={activeIndex}
+                      onMouseEnter={(_, index) => setActiveIndex(index)}
+                      className="cursor-pointer transition-all duration-300"
+                    >
+                      {pieData.map((entry, i) => (
+                        <Cell 
+                          key={i} 
+                          fill={entry.color} 
+                          stroke="transparent" 
+                          style={{
+                            filter: activeIndex === i ? `drop-shadow(0px 0px 8px ${entry.color}80)` : 'none',
+                            transform: activeIndex === i ? 'scale(1.05)' : 'scale(1)',
+                            transformOrigin: 'center'
+                          }}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{ backgroundColor: 'rgba(17, 17, 17, 0.75)', backdropFilter: 'blur(8px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff', fontSize: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}
+                      itemStyle={{ color: '#fff' }}
+                      formatter={(v) => [`${v.toLocaleString()} kg`, '']}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
             </div>
 
             {pieData.map(item => (
@@ -439,44 +489,46 @@ export default function CarbonAnalytics() {
             ))}
           </div>
 
-          {/* ── RECOMMENDATIONS ── */}
+          {/* ── RECOMMENDATIONS (Effort vs Impact Matrix) ── */}
           <div className="bg-white dark:bg-[#16161a] p-6 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col gap-4">
             <div className="flex items-center gap-2">
-              <h4 className="text-sm font-bold text-gray-900 dark:text-white">Personalized Insights</h4>
+              <h4 className="text-sm font-bold text-gray-900 dark:text-white">Effort vs. Impact Matrix</h4>
               <span className="text-xs bg-[#0FDE72]/10 text-[#0FDE72] px-2 py-0.5 rounded-full font-bold border border-[#0FDE72]/20">AI-DRIVEN</span>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              Your current footprint is {(total / 1000).toFixed(1)} tonnes. Here are your highest-impact actions.
+              Your current footprint is {(total / 1000).toFixed(1)} tonnes. Here is your prioritized action plan.
             </p>
-            <h5 className="text-sm font-bold text-gray-900 dark:text-white mt-1">Recommended actions</h5>
-            <div className="flex flex-col gap-4 mt-2">
-              {recs.map((rec, i) => (
-                <div key={i} className="flex gap-4 p-5 rounded-2xl bg-white dark:bg-[#16161a] border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden transition-all hover:shadow-md">
-                  {/* Number Badge */}
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white z-10" style={{ backgroundColor: rec.color }}>
-                    {i + 1}
-                  </div>
-                  
-                  <div className="flex-grow z-10">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-lg" aria-hidden="true">{rec.icon}</span>
-                      <h6 className="text-xs font-bold uppercase tracking-wider" style={{ color: rec.color }}>{rec.category}</h6>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+              {recs.map((rec, i) => {
+                let typeBadge = '';
+                let typeColor = '';
+                if (rec.timeframe === 'Immediate') { typeBadge = '⚡ Quick Win'; typeColor = '#FACC15'; }
+                else if (rec.timeframe === 'Requires Planning') { typeBadge = '🎯 Strategic'; typeColor = '#00D1FF'; }
+                else { typeBadge = '🔄 Habit Builder'; typeColor = '#0FDE72'; }
+
+                return (
+                  <div key={i} className="flex flex-col p-5 rounded-2xl bg-gray-50 dark:bg-[#111] border border-gray-100 dark:border-gray-800 shadow-sm relative transition-all hover:-translate-y-1 hover:shadow-md h-full">
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl" aria-hidden="true">{rec.icon}</span>
+                        <h6 className="text-xs font-bold uppercase tracking-wider" style={{ color: rec.color }}>{rec.category}</h6>
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-4 flex-grow">
                       {rec.action}
                     </p>
                     
-                    <div className="flex flex-wrap items-center gap-3">
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white dark:bg-[#111]" style={{ color: rec.color, border: `1px solid ${rec.color}30` }}>
-                        <span aria-hidden="true">💚</span> Save ~{rec.saving.toLocaleString()} kg CO₂e/year
+                    <div className="flex flex-wrap items-center justify-between gap-2 mt-auto">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white dark:bg-[#16161a]" style={{ color: rec.color, border: `1px solid ${rec.color}30` }}>
+                        <span aria-hidden="true">↓</span> Save ~{rec.saving.toLocaleString()} kg/yr
                       </div>
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-[#111]">
-                        <span aria-hidden="true">⏱️</span> {rec.timeframe}
-                      </div>
+                      <span className="text-[10px] font-bold px-2 py-1 rounded-full border" style={{ color: typeColor, borderColor: `${typeColor}40`, backgroundColor: `${typeColor}10` }}>
+                        {typeBadge}
+                      </span>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
