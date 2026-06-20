@@ -273,7 +273,25 @@ export default function CarbonAnalytics() {
               <span className="text-2xl" aria-hidden="true">⚡</span>
               <h3 className="font-bold text-gray-900 dark:text-white">Home Energy</h3>
             </div>
-            <div className="p-6 grid grid-cols-1 sm:grid-cols-          {/* ── LIFESTYLE & DIET ── */}
+            <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label htmlFor="kwh" className={labelCls}>Monthly electricity (kWh)</label>
+                <input id="kwh" aria-label="Monthly electricity usage in kilowatt hours" type="number" min="0" max="3000" value={kwh}
+                  onChange={e => setKwh(Number(e.target.value))}
+                  className={inputCls} />
+              </div>
+              <div className="sm:col-span-2">
+                <label className={labelCls}>Grid / energy source</label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-1">
+                  <RadioCard label="Coal / Gas Grid" emoji="🏭" value="coal" current={gridType} onChange={setGridType} color="#00D1FF" />
+                  <RadioCard label="Mixed Grid" emoji="🔌" value="mixed" current={gridType} onChange={setGridType} color="#00D1FF" />
+                  <RadioCard label="100% Green / Solar" emoji="☀️" value="renewable" current={gridType} onChange={setGridType} color="#00D1FF" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── LIFESTYLE & DIET ── */}
           <div className="bg-white dark:bg-[#16161a] rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
             <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-[#B026FF]/5">
               <span className="text-2xl" aria-hidden="true">🌱</span>
