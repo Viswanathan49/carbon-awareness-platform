@@ -90,6 +90,7 @@ export default function CarbonAnalytics() {
   });
   const [saved, setSaved]         = useState(false);
   const [copied, setCopied]       = useState(false);
+  const [hasCalculated, setHasCalculated] = useState(false);
   const [annualGoal, setAnnualGoal] = useState(() => {
     try { return Number(localStorage.getItem('cf_goal')) || 2500; }
     catch { return 2500; }
@@ -214,7 +215,14 @@ export default function CarbonAnalytics() {
         {/* ════════════════════════════════════════════════
             LEFT COLUMN — FORM
         ════════════════════════════════════════════════ */}
-        <div className="lg:col-span-7 flex flex-col gap-6">
+        <form 
+          className="lg:col-span-7 flex flex-col gap-6"
+          onSubmit={(e) => {
+            e.preventDefault();
+            setHasCalculated(true);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        >
 
           {/* ── TRANSPORT ── */}
           <div className="bg-white dark:bg-[#16161a] rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
@@ -265,59 +273,42 @@ export default function CarbonAnalytics() {
               <span className="text-2xl" aria-hidden="true">⚡</span>
               <h3 className="font-bold text-gray-900 dark:text-white">Home Energy</h3>
             </div>
-            <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div>
-                <label htmlFor="kwh" className={labelCls}>Monthly electricity (kWh)</label>
-                <input id="kwh" aria-label="Monthly electricity usage in kilowatt hours" type="number" min="0" max="3000" value={kwh}
-                  onChange={e => setKwh(Number(e.target.value))}
-                  className={inputCls} />
-              </div>
-              <div className="sm:col-span-2">
-                <label className={labelCls}>Grid / energy source</label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-1">
-                  <RadioCard label="Coal / Gas Grid" emoji="🏭" value="coal" current={gridType} onChange={setGridType} color="#00D1FF" />
-                  <RadioCard label="Mixed Grid" emoji="🔌" value="mixed" current={gridType} onChange={setGridType} color="#00D1FF" />
-                  <RadioCard label="100% Green / Solar" emoji="☀️" value="renewable" current={gridType} onChange={setGridType} color="#00D1FF" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ── DIET ── */}
+            <div className="p-6 grid grid-cols-1 sm:grid-cols-          {/* ── LIFESTYLE & DIET ── */}
           <div className="bg-white dark:bg-[#16161a] rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
             <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-[#B026FF]/5">
-              <span className="text-2xl" aria-hidden="true">🥩</span>
-              <h3 className="font-bold text-gray-900 dark:text-white">Diet</h3>
+              <span className="text-2xl" aria-hidden="true">🌱</span>
+              <h3 className="font-bold text-gray-900 dark:text-white">Lifestyle & Diet</h3>
             </div>
-            <div className="p-6">
-              <label className={labelCls}>Typical diet profile</label>
-              <div className="grid grid-cols-2 gap-3 mt-1">
-                <RadioCard label="Meat-heavy" emoji="🥩" value="meat-heavy" current={diet} onChange={setDiet} color="#B026FF" />
-                <RadioCard label="Balanced" emoji="🍗" value="balanced" current={diet} onChange={setDiet} color="#B026FF" />
-                <RadioCard label="Vegetarian" emoji="🥚" value="vegetarian" current={diet} onChange={setDiet} color="#B026FF" />
-                <RadioCard label="Vegan" emoji="🌱" value="vegan" current={diet} onChange={setDiet} color="#B026FF" />
+            <div className="p-6 grid grid-cols-1 gap-6">
+              <div>
+                <label className={labelCls}>Typical diet profile</label>
+                <div className="grid grid-cols-2 gap-3 mt-1">
+                  <RadioCard label="Meat-heavy" emoji="🥩" value="meat-heavy" current={diet} onChange={setDiet} color="#B026FF" />
+                  <RadioCard label="Balanced" emoji="🍗" value="balanced" current={diet} onChange={setDiet} color="#B026FF" />
+                  <RadioCard label="Vegetarian" emoji="🥚" value="vegetarian" current={diet} onChange={setDiet} color="#B026FF" />
+                  <RadioCard label="Vegan" emoji="🌱" value="vegan" current={diet} onChange={setDiet} color="#B026FF" />
+                </div>
               </div>
-            </div>
-          </div>
-
-          {/* ── GOODS ── */}
-          <div className="bg-white dark:bg-[#16161a] rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
-            <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-[#FACC15]/5">
-              <span className="text-2xl" aria-hidden="true">🛍️</span>
-              <h3 className="font-bold text-gray-900 dark:text-white">Goods & Services</h3>
-            </div>
-            <div className="p-6">
-              <label htmlFor="monthlySpend" className={labelCls}>Monthly non-essential spend (USD equivalent)</label>
-              <input id="monthlySpend" aria-label="Monthly non-essential spend in USD equivalent" type="number" min="0" max="5000" value={monthlySpend}
-                onChange={e => setSpend(Number(e.target.value))}
-                className={inputCls} />
-              <p className="text-xs text-gray-400 mt-1">Clothing, electronics, dining out, subscriptions.</p>
+              <div className="pt-6 border-t border-gray-100 dark:border-gray-800">
+                <label htmlFor="monthlySpend" className={labelCls}>Monthly non-essential spend (USD equivalent)</label>
+                <input id="monthlySpend" aria-label="Monthly non-essential spend in USD equivalent" type="number" min="0" max="5000" value={monthlySpend}
+                  onChange={e => setSpend(Number(e.target.value))}
+                  className={inputCls} />
+                <p className="text-xs text-gray-400 mt-1">Clothing, electronics, dining out, subscriptions.</p>
+              </div>
             </div>
           </div>
 
           {/* ── ACTIONS ── */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="mt-4">
             <button
+              type="submit"
+              className="w-full py-4 rounded-2xl font-bold text-lg tracking-wide transition-all duration-300 bg-[#0FDE72] hover:bg-[#0bc060] text-black shadow-[0_0_20px_rgba(15,222,114,0.3)] hover:shadow-[0_0_30px_rgba(15,222,114,0.5)] transform hover:-translate-y-1"
+            >
+              Calculate My Footprint
+            </button>
+          </div>
+        </form>utton
               onClick={saveEntry}
               className={`w-full py-3.5 rounded-2xl font-bold text-sm tracking-wide transition-all duration-300 border ${
                 saved
@@ -345,29 +336,51 @@ export default function CarbonAnalytics() {
             RIGHT COLUMN — RESULTS DASHBOARD
         ════════════════════════════════════════════════ */}
         <div className="lg:col-span-5 flex flex-col gap-6 lg:sticky lg:top-8">
-
-          {/* ── TOTAL SCORE ── */}
-          <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#111] dark:to-[#0a0a0a] p-8 rounded-3xl border border-gray-200 dark:border-white/5 shadow-xl relative overflow-hidden">
-            <div className="absolute -top-6 -right-6 text-[120px] opacity-5 select-none" aria-hidden="true">🌍</div>
-            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Your Estimated Footprint</h4>
-            <div className="flex items-end gap-2 mb-1">
-              <span className="text-5xl font-black text-gray-900 dark:text-white tracking-tighter" aria-label={`Your total footprint is ${(total / 1000).toFixed(2)} tonnes of CO2 equivalent per year`}>
-                {(total / 1000).toFixed(2)}
-              </span>
-              <span className="text-lg text-gray-400 font-medium mb-1">t CO₂e / year</span>
+          
+          {!hasCalculated ? (
+            <div className="bg-white dark:bg-[#16161a] rounded-3xl border border-gray-200 dark:border-gray-800 p-8 flex flex-col items-center justify-center text-center h-full min-h-[400px] shadow-sm">
+              <div className="text-6xl mb-6 opacity-80 animate-bounce" aria-hidden="true">🌍</div>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Awaiting Data</h3>
+              <p className="text-gray-500 dark:text-gray-400 leading-relaxed mb-6">
+                Complete your profile on the left and click calculate to generate your customized carbon dashboard and reduction plan.
+              </p>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-[#111] rounded-full border border-gray-100 dark:border-gray-800 text-xs font-semibold text-gray-400">
+                <span className="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600"></span> Standing by
+              </div>
             </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-3">
-              That is{' '}
-              <span className="text-red-500 font-bold">{(total / PARIS_TARGET).toFixed(1)}×</span>
-              {' '}the sustainable target (2 t) and{' '}
-              <span className="font-bold text-gray-700 dark:text-gray-200">{(total / GLOBAL_AVG).toFixed(1)}×</span>
-              {' '}the global average.
-            </p>
-            <div className="mt-4 flex items-center gap-2 bg-white dark:bg-[#1a1a1a] px-3 py-1.5 rounded-full border border-gray-200 dark:border-gray-800 w-fit">
-              <span className="w-2 h-2 rounded-full bg-[#0FDE72] animate-pulse"></span>
-              <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">Live calculation</span>
-            </div>
-          </div>
+          ) : (
+            <div className="animate-fade-in flex flex-col gap-6">
+              {/* ── TOTAL SCORE ── */}
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#111] dark:to-[#0a0a0a] p-8 rounded-3xl border border-gray-200 dark:border-white/5 shadow-xl relative overflow-hidden">
+                <div className="absolute -top-6 -right-6 text-[120px] opacity-5 select-none" aria-hidden="true">🌍</div>
+                <div className="flex justify-between items-center mb-3 relative z-10">
+                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Your Estimated Footprint</h4>
+                  <button onClick={() => setHasCalculated(false)} className="text-xs text-gray-500 hover:text-gray-900 dark:hover:text-white underline underline-offset-2 transition-colors">
+                    Edit inputs
+                  </button>
+                </div>
+                <div className="flex items-end gap-2 mb-1 relative z-10">
+                  <span className="text-5xl font-black text-gray-900 dark:text-white tracking-tighter" aria-label={`Your total footprint is ${(total / 1000).toFixed(2)} tonnes of CO2 equivalent per year`}>
+                    {(total / 1000).toFixed(2)}
+                  </span>
+                  <span className="text-lg text-gray-400 font-medium mb-1">t CO₂e / year</span>
+                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-3 relative z-10">
+                  That is{' '}
+                  <span className="text-red-500 font-bold">{(total / PARIS_TARGET).toFixed(1)}×</span>
+                  {' '}the sustainable target (2 t) and{' '}
+                  <span className="font-bold text-gray-700 dark:text-gray-200">{(total / GLOBAL_AVG).toFixed(1)}×</span>
+                  {' '}the global average.
+                </p>
+                <div className="mt-6 flex flex-col sm:flex-row gap-3 relative z-10">
+                  <button onClick={saveEntry} className={`flex-1 py-2.5 rounded-xl font-bold text-xs tracking-wide transition-all duration-300 border ${saved ? 'bg-[#0FDE72]/10 text-[#0FDE72] border-[#0FDE72]/30' : 'bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white border-gray-200 dark:border-gray-700 hover:border-[#0FDE72] hover:text-[#0FDE72]'}`}>
+                    {saved ? '✅ Saved' : '💾 Save Entry'}
+                  </button>
+                  <button onClick={copyToClipboard} className={`flex-1 py-2.5 rounded-xl font-bold text-xs tracking-wide transition-all duration-300 border ${copied ? 'bg-[#00D1FF]/10 text-[#00D1FF] border-[#00D1FF]/30' : 'bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white border-gray-200 dark:border-gray-700 hover:border-[#00D1FF] hover:text-[#00D1FF]'}`}>
+                    {copied ? '✅ Copied' : '📤 Share'}
+                  </button>
+                </div>
+              </div>
 
           {/* ── BENCHMARK COMPARISON ── */}
           <div className="bg-white dark:bg-[#16161a] p-6 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col gap-4">
